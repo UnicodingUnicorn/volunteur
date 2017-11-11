@@ -14,19 +14,25 @@
     <h3 class="card-title">Repair Kopitiam November</h3>
     <div class="card-subtitle">Repair Kopitiam</div>
   </ion-card>
-  <ion-card>
+  <ion-card class="card-dark">
     <h3 class="card-title">View more <ion-icon class="arrow-more" name="arrow-dropright-circle"></ion-icon></h3>
   </ion-card>
-  <h2>Recommended for you</h2>
-  <ion-card class="card-image" style="background-image: url('https://source.unsplash.com/random/200')">
-    <h3 class="card-title">Some Event Name</h3>
-    <div class="card-subtitle">Lion Befrienders</div>
-  </ion-card>
-  <ion-card class="card-image" style="background-image: url('https://source.unsplash.com/random/240')">
-    <h3 class="card-title">Repair Kopitiam November</h3>
-    <div class="card-subtitle">Repair Kopitiam</div>
-  </ion-card>
-  <ion-card>
-    <h3 class="card-title">View more <ion-icon class="arrow-more" name="arrow-dropright-circle"></ion-icon></h3>
-  </ion-card>
+  <h2>Explore by category</h2>
+  <ion-list>
+    <button ion-item (click)="return">
+      Elderly
+    </button>
+    <button ion-item (click)="return">
+      Event organisation
+    </button>
+    <button ion-item (click)="return">
+      Animals
+    </button>
+    <button ion-item (click)="return">
+      Cleanups
+    </button>
+    <button ion-item (click)="return">
+      Education
+    </button>
+  </ion-list>
 </ion-content>

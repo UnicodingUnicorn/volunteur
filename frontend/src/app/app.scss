@@ -14,3 +14,48 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+@import url('https://rsms.me/inter/inter-ui.css');
+
+ion-app.md {
+  font-family: 'Inter UI', "Roboto", "Helvetica Neue", sans-serif;
+}
+ion-app.ios {
+  font-family: 'Inter UI', -apple-system, "Helvetica Neue", "Roboto", sans-serif;
+}
+
+ion-card.card {
+  background: #fff center / cover no-repeat;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  height: 180px;
+  //width: 240px;
+
+  .card-title {
+    font-size: 1.4em;
+    font-weight: bold;
+  }
+
+  .card-subtitle {
+    font-size: 1.2em;
+  }
+
+  &.card-image,
+  &.card-dark {
+    color: #fff;
+    background: color($colors, primary);
+
+    .card-title {
+      color: #fff;
+    }
+  }
+  
+
+  .arrow-more {
+    vertical-align: bottom;
+  }
+}
+
