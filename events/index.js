@@ -2,6 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var cors = require("cors");
 
+var async = require("async");
 var basicauth = require("basic-auth");
 var colours = require("colors");
 var jwt = require("jsonwebtoken");
@@ -63,6 +64,63 @@ app.get('/event/:name', auth, function(req, res){
   });
 });
 
+app.get('/events', function(req, res){
+  eventsClient.lrange('_events', 0, -1, function(err, events){
+    var events_data = [];
+    async.each(events, function(eventname, cb){
+      eventsClient.hgetall(eventname, function(get_err, eventdata){
+        eventdata.name = eventname;
+        eventdata.participants = JSON.parse(eventdata.participants);
+        events_data.push(eventdata);
+        cb();
+      });
+    }, function(){
+      res.status(200).json({
+        message : "Success",
+        events : events_data
+      });
+    });
+  });
+});
+
+app.get('/events/:count', function(req, res){
+  eventsClient.lrange('_events', 0, req.params.count - 1, function(err, events){
+    var events_data = [];
+    async.each(events, function(eventname, cb){
+      eventsClient.hgetall(eventname, function(get_err, eventdata){
+        eventdata.name = eventname;
+        eventdata.participants = JSON.parse(eventdata.participants);
+        events_data.push(eventdata);
+        cb();
+      });
+    }, function(){
+      res.status(200).json({
+        message : "Success",
+        events : events_data
+      });
+    });
+  });
+});
+
+app.get('/events/:offset/:count', function(req, res){
+  eventsClient.lrange('_events', req.params.offset, req.params.offset + req.params.count -1, function(err, events){
+    var events_data = [];
+    async.each(events, function(eventname, cb){
+      eventsClient.hgetall(eventname, function(get_err, eventdata){
+        eventdata.name = eventname;
+        eventdata.participants = JSON.parse(eventdata.participants);
+        events_data.push(eventdata);
+        cb();
+      });
+    }, function(){
+      res.status(200).json({
+        message : "Success",
+        events : events_data
+      });
+    });
+  });
+});
+
 app.post("/event/new", auth, function(req, res){
   jwt.verify(req.body.token, secret, function(ver_err, decoded){
     if(ver_err){
@@ -82,14 +140,6 @@ app.post("/event/new", auth, function(req, res){
         res.status(404).json({
           message : 'End time not found'
         });
-      }else if(!req.body.lat){
-        res.status(404).json({
-          message : 'Latitude not found'
-        });
-      }else if(!req.body.lng){
-        res.status(404).json({
-          message : 'Longitude not found'
-        });
       }else if(!req.body.organisation){
         res.status(404).json({
           message : 'Organisation not found'
@@ -103,40 +153,14 @@ app.post("/event/new", auth, function(req, res){
           message : 'Organiser not found'
         });
       }else{
-        // if(!(req.body.lat.match(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/) && req.body.lng.match(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/))){
-        //   res.status(400).json({
-        //     message : "Invalid latlng"
-        //   });
-        // }else{
-        //   var startdt = new Date(req.body.starttime);
-        //   var enddt = new Date(req.body.endtime);
-        //   if(startdt.value <= Date.now()){
-        //     res.status(400).json({
-        //       message : "Invalid start time"
-        //     });
-        //   }else if(enddt < startdt){
-        //     res.status(400).json({
-        //       message : "Invalid end time"
-        //     });
-        //   }else{
-        //     eventsClient.hset(req.body.name, 'starttime', req.body.starttime, redis.print);
-        //     eventsClient.hset(req.body.name, 'endtime', req.body.endtime, redis.print);
-        //     eventsClient.hset(req.body.name, 'lat', req.body.lat, redis.print);
-        //     eventsClient.hset(req.body.name, 'lng', req.body.lng, redis.print);
-        //     eventsClient.hset(req.body.name, 'organisation', req.body.organisation, redis.print);
-        //     eventsClient.hset(req.body.name, 'organiser', req.body.organiser, redis.print);
-        //     eventsClient.hset(req.body.name, 'description', req.body.description, redis.print);
-        //     res.status(200).json({
-        //       message : "Success"
-        //     });
-        //   }
-        // }
         eventsClient.exists(req.body.name, function(err, exists){
           if(exists){
             res.status(400).json({
               message : "Event with name already exists"
             });
           }else{
+            eventsClient.lpush('_events', req.body.name, redis.print);
+
             eventsClient.hset(req.body.name, 'starttime', req.body.starttime, redis.print);
             eventsClient.hset(req.body.name, 'endtime', req.body.endtime, redis.print);
             eventsClient.hset(req.body.name, 'lat', req.body.lat, redis.print);
@@ -146,6 +170,7 @@ app.post("/event/new", auth, function(req, res){
             eventsClient.hset(req.body.name, 'description', req.body.description, redis.print);
             eventsClient.hset(req.body.name, 'counter', 0, redis.print);
             eventsClient.hset(req.body.name, 'participants', JSON.stringify([decoded]), redis.print);
+
             res.status(200).json({
               message : "Success"
             });

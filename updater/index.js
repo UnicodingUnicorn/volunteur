@@ -29,9 +29,8 @@ creator(nano, 'archives', {name : 'archives', doc : archives_design}, function(d
 
 var update = function(){
   setTimeout(update, 60 * 1000);
-  eventsClient.keys('*', function(err, keys){
+  eventsClient.lrange('_events', 0, -1, function(err, keys){
     var now = Date.now();
-    console.log(now);
     async.each(keys, function(key, cb){
       eventsClient.hget(key, 'endtime', function(get_err, endtime){
         var enddt = new Date(endtime);
@@ -45,6 +44,7 @@ var update = function(){
               }else{
                 console.log("Archived " + key);
                 eventsClient.del(key, redis.print);
+                eventsClient.lrem('_events', 0, key);
               }
               cb();
             });
@@ -53,10 +53,11 @@ var update = function(){
           //Check if an hour has passed
           eventsClient.hget(key, 'counter', function(count_err, count){
             if(count == 0){
+              console.log('Updating score for ' + key);
               eventsClient.hget(key, 'participants', function(getpar_err, raw_participants){
                 var participants = JSON.parse(raw_participants);
                 async.each(participants, function(participant, cb2){
-                  usersClient.hincrby(participant, 'score', 1, redis.print);
+                  usersClient.hincrby(participant, 'score', 1);
                   cb2();
                 }, function(){
 
@@ -64,9 +65,9 @@ var update = function(){
               });
             }
             if(count >= 59){
-              eventsClient.hset(key, 'counter', 0, redis.print);
+              eventsClient.hset(key, 'counter', 0);
             }else{
-              eventsClient.hincrby(key, 'counter', 1, redis.print);
+              eventsClient.hincrby(key, 'counter', 1);
             }
             cb();
           });
