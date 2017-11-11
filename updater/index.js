@@ -54,14 +54,19 @@ var update = function(){
           eventsClient.hget(key, 'counter', function(count_err, count){
             if(count == 0){
               console.log('Updating score for ' + key);
-              eventsClient.hget(key, 'participants', function(getpar_err, raw_participants){
-                var participants = JSON.parse(raw_participants);
-                async.each(participants, function(participant, cb2){
-                  usersClient.hincrby(participant, 'score', 1);
-                  cb2();
-                }, function(){
+              eventsClient.hget(key, 'starttime', function(getstart_err, starttime){
+                var startdt = new Date(starttime);
+                if(startdt.getTime() < now){
+                  eventsClient.hget(key, 'participants', function(getpar_err, raw_participants){
+                    var participants = JSON.parse(raw_participants);
+                    async.each(participants, function(participant, cb2){
+                      usersClient.hincrby(participant, 'score', 1);
+                      cb2();
+                    }, function(){
 
-                });
+                    });
+                  });
+                }
               });
             }
             if(count >= 59){
