@@ -45,20 +45,21 @@ var update = function(){
               }else{
                 console.log("Archived " + key);
                 eventsClient.del(key, redis.print);
-                cb();
               }
+              cb();
             });
           });
         }else{
           //Check if an hour has passed
           eventsClient.hget(key, 'counter', function(count_err, count){
             if(count == 0){
-              eventsClient.hget(key, 'participants', function(getpar_err, participants){
+              eventsClient.hget(key, 'participants', function(getpar_err, raw_participants){
+                var participants = JSON.parse(raw_participants);
                 async.each(participants, function(participant, cb2){
                   usersClient.hincrby(participant, 'score', 1, redis.print);
                   cb2();
                 }, function(){
-                  cb();
+
                 });
               });
             }
@@ -66,8 +67,8 @@ var update = function(){
               eventsClient.hset(key, 'counter', 0, redis.print);
             }else{
               eventsClient.hincrby(key, 'counter', 1, redis.print);
-              cb();
             }
+            cb();
           });
         }
       });

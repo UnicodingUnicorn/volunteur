@@ -131,17 +131,25 @@ app.post("/event/new", auth, function(req, res){
         //     });
         //   }
         // }
-        eventsClient.hset(req.body.name, 'starttime', req.body.starttime, redis.print);
-        eventsClient.hset(req.body.name, 'endtime', req.body.endtime, redis.print);
-        eventsClient.hset(req.body.name, 'lat', req.body.lat, redis.print);
-        eventsClient.hset(req.body.name, 'lng', req.body.lng, redis.print);
-        eventsClient.hset(req.body.name, 'organisation', req.body.organisation, redis.print);
-        eventsClient.hset(req.body.name, 'organiser', req.body.organiser, redis.print);
-        eventsClient.hset(req.body.name, 'description', req.body.description, redis.print);
-        eventsClient.hset(req.body.name, 'counter', 0, redis.print);
-        eventsClient.hset(req.body.name, 'participants', JSON.stringify([decoded]), redis.print);
-        res.status(200).json({
-          message : "Success"
+        eventsClient.exists(req.body.name, function(err, exists){
+          if(exists){
+            res.status(400).json({
+              message : "Event with name already exists"
+            });
+          }else{
+            eventsClient.hset(req.body.name, 'starttime', req.body.starttime, redis.print);
+            eventsClient.hset(req.body.name, 'endtime', req.body.endtime, redis.print);
+            eventsClient.hset(req.body.name, 'lat', req.body.lat, redis.print);
+            eventsClient.hset(req.body.name, 'lng', req.body.lng, redis.print);
+            eventsClient.hset(req.body.name, 'organisation', req.body.organisation, redis.print);
+            eventsClient.hset(req.body.name, 'organiser', req.body.organiser, redis.print);
+            eventsClient.hset(req.body.name, 'description', req.body.description, redis.print);
+            eventsClient.hset(req.body.name, 'counter', 0, redis.print);
+            eventsClient.hset(req.body.name, 'participants', JSON.stringify([decoded]), redis.print);
+            res.status(200).json({
+              message : "Success"
+            });
+          }
         });
       }
     }
@@ -184,6 +192,28 @@ app.post("/event/update/:name", auth, function(req, res){
   });
 });
 
+app.post("/event/adduser", function(req, res){
+  jwt.verify(req.body.token, secret, function(ver_err, decoded){
+    if(ver_err){
+      res.status(403).json({
+        message : "Invalid token"
+      });
+    }else{
+      eventsClient.hget(req.body.name, 'participants', function(get_err, raw_participants){
+        if(raw_participants){
+          var participants = JSON.parse(raw_participants);
+          participants.push(decoded);
+          eventsClient.hset(req.body.name, 'participants', JSON.stringify(participants), redis.print);
+        }else{
+          res.status(404).json({
+            message : "Event not found"
+          });
+        }
+      });
+    }
+  });
+});
+
 app.listen(process.env.EVENTS_PORT, function(err){
-  err ? console.error(err) : console.log(("Events API up at " + process.env.EVENTS_PORT).rainbow);
+  err ? console.error(err) : console.log(("Events API up at " + process.env.EVENTS_PORT).green);
 });
