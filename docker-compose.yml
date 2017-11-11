@@ -1,47 +1,23 @@
 version: "3"
 services:
-  couchdb:
-    image: couchdb:latest
-    environment:
-      - COUCHDB_USER=admin
-      - COUCHDB_PASSWORD=password
+  redis:
+    image: redis
     ports:
-      - "5984:5984" #Open temporarily for debugging
+      - "6379:6379" #Open temporarily for debugging
     networks:
-      - couchnet
-  memcached:
-    image: memcached
-    networks:
-      - memnet
-  admin:
-    build: ./admin
+      - redisnet
+  accounts:
+    build: ./accounts
     tty: true
     environment:
+      - ACCOUNTS_PORT=10203
       - COUCHDB_USER=admin
       - COUCHDB_PASSWORD=password
-      - ADMIN_PORT=10201
     ports:
-      - "10201:10201"
+      - "10203:10203"
     depends_on:
       - couchdb
     networks:
       - couchnet
-  openid:
-    build: ./openid
-    tty: true
-    environment:
-      - OPENID_PORT=10202
-      - ISS=localhost
-      - COUCHDB_USER=admin
-      - COUCHDB_PASSWORD=password
-    ports:
-      - "10202:10202"
-    depends_on:
-      - couchdb
-      - memcached
-    networks:
-      - couchnet
-      - memnet
 networks:
-  couchnet:
-  memnet:
+  redisnet:
