@@ -1,31 +1,3 @@
 page-find {
 
-  ion-card.card {
-    background: #fff center / cover no-repeat;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    height: 180px;
-    //width: 240px;
-    .card-title {
-      font-size: 1.4em;
-      font-weight: bold;
-    }
-    .card-subtitle {
-      font-size: 1.2em;
-    }
-  }
-  ion-card.card.card-image {
-    color: #fff;
-    .card-title {
-      color: #fff;
-    }
-  }
-
-  .arrow-more {
-    vertical-align: bottom;
-  }
-
 }
