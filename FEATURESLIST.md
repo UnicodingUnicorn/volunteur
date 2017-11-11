@@ -11,3 +11,5 @@
 - [ ] Group based signup
 - [ ] Group based leaderboard
 - [ ] Featured volunteer (highest week points)
+- [ ] Sponsors and coupons
+- [ ] Rating system and commendation

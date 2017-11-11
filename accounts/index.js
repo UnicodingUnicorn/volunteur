@@ -110,6 +110,37 @@ app.post('/user/new', auth, function(req, res){
   }
 });
 
+app.post('/user/update/:token', auth, function(req, res){
+  jwt.verify(req.params.token, secret, function(ver_err, decoded){
+    if(ver_err){
+      res.status(403).json({
+        message : "Invalid token"
+      });
+    }else{
+      usersClient.hgetall(decoded, function(err, user){
+        if(user){
+          if(req.body.name){
+            usersClient.hset(decoded, 'name', req.body.name, redis.print);
+          }
+          if(req.body.password){
+            usersClient.hset(decoded, 'password', req.body.password, redis.print);
+          }
+          if(req.body.organisation){
+            usersClient.hset(decoded, 'organisation', req.body.organisation, redis.print);
+          }
+          res.status(200).json({
+            message : "Success"
+          });
+        }else{
+          res.status(404).json({
+            message : "User not found"
+          });
+        }
+      });
+    }
+  });
+});
+
 app.get('/user/:username', auth, function(req, res){
   usersClient.hgetall(req.params.username, function(err, userfields){
     delete userfields.password;

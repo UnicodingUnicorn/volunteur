@@ -118,3 +118,49 @@ The user already exists.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | message | String | User already exists |
+
+### Update a user's information
+
+```
+POST /user/update/:token
+```
+
+Update a user's information. Do note that **no** verification for strong passwords or the like is done on the backend.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| token | String | JWT from login of the user whose information is being updated |
+
+#### Body
+
+All of these fields are optional. If one is not present, it is simply not updated.
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| name | String | User's name |
+| password | String | User's password |
+| organisation | String | User's organisation |
+
+#### Success 200
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | Success |
+
+#### Error 404
+
+The user the token specifies cannot be found.
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | User not found |
+
+#### Error 403
+
+The token is invalid.
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | Invalid token |
