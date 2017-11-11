@@ -4,8 +4,9 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <h2>Recommended for you</h2>
+<ion-content>
+
+  <h1 padding>Recommended for you</h1>
   <ion-card class="card-image" style="background-image: url('https://source.unsplash.com/random/200')">
     <h3 class="card-title">Some Event Name</h3>
     <div class="card-subtitle">Lion Befrienders</div>
@@ -19,22 +20,28 @@
       View more
     </button>
   </ion-list>
-  <h2>Explore by category</h2>
-  <ion-list>
+  <h1 padding>Explore by category</h1>
+  <ion-list no-lines>
     <button ion-item (click)="return">
+      <ion-icon name="search" item-start></ion-icon>
       Elderly
     </button>
     <button ion-item (click)="return">
+      <ion-icon name="search" item-start></ion-icon>
       Event organisation
     </button>
     <button ion-item (click)="return">
+      <ion-icon name="search" item-start></ion-icon>
       Animals
     </button>
     <button ion-item (click)="return">
+      <ion-icon name="search" item-start></ion-icon>
       Cleanups
     </button>
     <button ion-item (click)="return">
+      <ion-icon name="search" item-start></ion-icon>
       Education
     </button>
   </ion-list>
+
 </ion-content>
