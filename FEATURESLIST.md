@@ -10,3 +10,4 @@
 ## Stretch Goals
 - [ ] Group based signup
 - [ ] Group based leaderboard
+- [ ] Featured volunteer (highest week points)
