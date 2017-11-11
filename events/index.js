@@ -138,6 +138,8 @@ app.post("/event/new", auth, function(req, res){
         eventsClient.hset(req.body.name, 'organisation', req.body.organisation, redis.print);
         eventsClient.hset(req.body.name, 'organiser', req.body.organiser, redis.print);
         eventsClient.hset(req.body.name, 'description', req.body.description, redis.print);
+        eventsClient.hset(req.body.name, 'counter', 0, redis.print);
+        eventsClient.hset(req.body.name, 'participants', JSON.stringify([decoded]), redis.print);
         res.status(200).json({
           message : "Success"
         });

@@ -1,5 +1,14 @@
 version: "3"
 services:
+  couchdb:
+    image: couchdb:latest
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+    ports:
+      - "5984:5984" #Open temporarily for debugging
+    networks:
+      - couchnet
   redis:
     image: redis
     ports:
@@ -41,5 +50,18 @@ services:
       - redis
     networks:
       - redisnet
+  updater:
+    build: ./updater
+    tty: true
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+    depends_on:
+      - couchdb
+      - redis
+    networks:
+      - couchnet
+      - redisnet
 networks:
+  couchnet:
   redisnet:
