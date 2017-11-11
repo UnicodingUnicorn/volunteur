@@ -1,0 +1,23 @@
+page-login {
+
+  .header {
+    background: #fff center / cover no-repeat;
+    text-align: center;
+    font-size: 1.4em;
+    color: #fff;
+    padding: $content-padding*3 $content-padding;
+
+    h1 {
+      font-size: 2em;
+      font-weight: bold;
+    }
+  }
+
+  .bg-1 {
+    background-image: url("/assets/imgs/login1.jpg");
+  }
+  .bg-2 {
+    background-image: url("/assets/imgs/login2.jpg");
+  }
+
+}

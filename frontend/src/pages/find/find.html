@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-searchbar (ionInput)="return"></ion-searchbar>
   </ion-navbar>
 </ion-header>
@@ -7,11 +7,11 @@
 <ion-content>
 
   <h1 padding>Recommended for you</h1>
-  <ion-card class="card-image" style="background-image: url('https://source.unsplash.com/random/200')">
+  <ion-card class="card-image" style="background-image: url('/assets/imgs/1.jpg')" (click)="openEvent(0)">
     <h3 class="card-title">Some Event Name</h3>
     <div class="card-subtitle">Lion Befrienders</div>
   </ion-card>
-  <ion-card class="card-image" style="background-image: url('https://source.unsplash.com/random/240')">
+  <ion-card class="card-image" style="background-image: url('/assets/imgs/2.jpg')">
     <h3 class="card-title">Repair Kopitiam November</h3>
     <div class="card-subtitle">Repair Kopitiam</div>
   </ion-card>
