@@ -17,6 +17,10 @@ var clientsClient = redis.createClient({
   host : 'redis',
   db : 1
 });
+var usersClient = redis.createClient({
+  host : 'redis',
+  db : 0
+});
 
 var app = express();
 
@@ -172,6 +176,11 @@ app.post("/event/new", auth, function(req, res){
             eventsClient.hset(req.body.name, 'geo', (req.body.lat && req.body.lng && req.body.size) != undefined);
             eventsClient.hset(req.body.name, 'organisation', req.body.organisation);
             eventsClient.hset(req.body.name, 'organiser', req.body.organiser);
+            usersClient.hget(req.body.organiser, 'events', function(getevents_err, raw_events){
+              var events = JSON.parse(raw_events);
+              events.push(req.body.name);
+              usersClient.hset(req.body.organiser, 'events', JSON.stringify(events));
+            });
             eventsClient.hset(req.body.name, 'description', req.body.description);
             eventsClient.hset(req.body.name, 'counter', 0);
             eventsClient.hset(req.body.name, 'participants', JSON.stringify([decoded]));
@@ -242,7 +251,15 @@ app.post("/event/adduser", function(req, res){
         if(raw_participants){
           var participants = JSON.parse(raw_participants);
           participants.push(decoded);
-          eventsClient.hset(req.body.name, 'participants', JSON.stringify(participants), redis.print);
+          eventsClient.hset(req.body.name, 'participants', JSON.stringify(participants));
+          usersClient.hget(decoded, 'events', function(getevents_err, raw_events){
+            var events = JSON.parse(raw_events);
+            events.push(req.body.name);
+            usersClient.hset(decoded, 'events', JSON.stringify(events));
+            res.status(200).json({
+              message : "Success"
+            });
+          });
         }else{
           res.status(404).json({
             message : "Event not found"
