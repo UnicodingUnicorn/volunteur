@@ -96,6 +96,7 @@ Add a new user. Do note that **no** verification for strong passwords or the lik
 | username | String | User's username |
 | name | String | User's name |
 | password | String | User's password |
+| bio | String | User's bio (Optional) |
 
 #### Success 200
 
@@ -142,6 +143,7 @@ All of these fields are optional. If one is not present, it is simply not update
 | name | String | User's name |
 | password | String | User's password |
 | organisation | String | User's organisation |
+| bio | String | User's bio |
 
 #### Success 200
 
