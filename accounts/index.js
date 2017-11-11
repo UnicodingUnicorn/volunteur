@@ -25,7 +25,7 @@ app.use(cors());
 
 var auth = function(req, res, next){
   var credentials = basicauth(req);
-  if(credentials.name && credentials.pass){
+  if(credentials && credentials.name && credentials.pass){
     clientsClient.get(credentials.name, function(err, pass){
       if(err){
         res.status(403).json({
@@ -100,9 +100,10 @@ app.post('/user/new', auth, function(req, res){
           message : "User already exists"
         });
       }else{
-        usersClient.hset(req.body.username, 'name', req.body.name, redis.print);
-        usersClient.hset(req.body.username, 'password', req.body.password, redis.print);
-        usersClient.hset(req.body.username, 'bio', req.body.bio, redis.print);
+        usersClient.hset(req.body.username, 'name', req.body.name);
+        usersClient.hset(req.body.username, 'password', req.body.password);
+        usersClient.hset(req.body.username, 'bio', req.body.bio);
+        usersClient.hset(req.body.username, 'events', JSON.stringify([]))
         res.status(200).json({
           message : "Success"
         });
@@ -143,12 +144,43 @@ app.post('/user/update/:token', auth, function(req, res){
 
 app.get('/user/:username', auth, function(req, res){
   usersClient.hgetall(req.params.username, function(err, userfields){
-    delete userfields.password;
-    userfields.username = req.params.username;
-    res.status(200).json({
-      message : "Success",
-      user : userfields
-    });
+    if(userfields){
+      delete userfields.password;
+      userfields.username = req.params.username;
+      res.status(200).json({
+        message : "Success",
+        user : userfields
+      });
+    }else{
+      res.status(404).json({
+        message : 'User not found'
+      });
+    }
+  });
+});
+
+app.get('/user/token/:token', auth, function(req, res){
+  jwt.verify(req.params.token, secret, function(ver_err, decoded){
+    if(ver_err){
+      res.status(403).json({
+        message : "Invalid token"
+      });
+    }else{
+      usersClient.hgetall(decoded, function(err, userfields){
+        if(userfields){
+          delete userfields.password;
+          userfields.username = decoded;
+          res.status(200).json({
+            message : "Success",
+            user : userfields
+          });
+        }else{
+          res.status(404).json({
+            message : 'User not found'
+          });
+        }
+      });
+    }
   });
 });
 
