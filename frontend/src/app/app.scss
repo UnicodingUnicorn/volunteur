@@ -46,7 +46,7 @@ ion-card.card {
   &.card-image,
   &.card-dark {
     color: #fff;
-    background: color($colors, primary);
+    background-color: color($colors, primary);
 
     .card-title {
       color: #fff;

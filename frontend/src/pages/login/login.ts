@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+
+import { TabsPage } from '../tabs/tabs';
+
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { TokenProvider } from '../../providers/token/token'
@@ -19,17 +22,23 @@ import { config } from '../../config'
   templateUrl: 'login.html',
 })
 export class LoginPage {
+
   username:string = '';
   password:string = '';
-
+  
   constructor(public navCtrl: NavController, public navParams: NavParams, private http:HttpClient, private tokenProvider:TokenProvider) {
-
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
   }
 
+  onLoginSuccess() {
+    this.navCtrl.push(TabsPage).then(() => {
+      this.navCtrl.remove(0)
+    });
+  }
+  
   login(){
     console.log(this.username);
     console.log(this.password);

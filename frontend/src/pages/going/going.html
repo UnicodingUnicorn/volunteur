@@ -1,18 +1,22 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>Going</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
 
-  <ion-card class="card-image" style="background-image: url('https://source.unsplash.com/random/200')">
+  <ion-card class="card-image" style="background-image: url('/assets/imgs/3.jpg')" (click)="openEvent(0)">
     <h3 class="card-title">Some Event Name</h3>
     <div class="card-subtitle">Lion Befrienders</div>
   </ion-card>
-  <ion-card class="card-image" style="background-image: url('https://source.unsplash.com/random/240')">
+  <ion-card class="card-image" style="background-image: url('/assets/imgs/2.jpg')">
     <h3 class="card-title">Repair Kopitiam November</h3>
     <div class="card-subtitle">Repair Kopitiam</div>
+  </ion-card>
+  <ion-card class="card-image" style="background-image: url('/assets/imgs/4.jpg')">
+    <h3 class="card-title">Some other event</h3>
+    <div class="card-subtitle">Youth Corp</div>
   </ion-card>
 
 </ion-content>

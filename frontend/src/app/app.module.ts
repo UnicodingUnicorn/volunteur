@@ -5,6 +5,8 @@ import { IonicStorageModule } from '@ionic/storage';
 import { MyApp } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 
+import { LoginPage } from '../pages/login/login';
+
 import { FindPage } from '../pages/find/find';
 import { BrowsePage } from '../pages/browse/browse';
 import { GoingPage } from '../pages/going/going';
@@ -13,20 +15,24 @@ import { ProfilePage } from '../pages/profile/profile';
 import { TabsPage } from '../pages/tabs/tabs';
 import { LoginPage } from '../pages/login/login';
 
+import { EventPage } from '../pages/event/event';
+
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { Deeplinks } from '@ionic-native/deeplinks';
 import { TokenProvider } from '../providers/token/token';
 
 @NgModule({
   declarations: [
     MyApp,
+    LoginPage,
     FindPage,
     BrowsePage,
     GoingPage,
     UpdatesPage,
     ProfilePage,
     TabsPage,
-    LoginPage
+    EventPage
   ],
   imports: [
     BrowserModule,
@@ -37,18 +43,20 @@ import { TokenProvider } from '../providers/token/token';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
+    LoginPage,
     FindPage,
     BrowsePage,
     GoingPage,
     UpdatesPage,
     ProfilePage,
     TabsPage,
-    LoginPage
+    EventPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    Deeplinks,
+    {provide: ErrorHandler, useClass: IonicErrorHandler}
     TokenProvider
   ]
 })
