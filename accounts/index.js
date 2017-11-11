@@ -102,6 +102,7 @@ app.post('/user/new', auth, function(req, res){
       }else{
         usersClient.hset(req.body.username, 'name', req.body.name, redis.print);
         usersClient.hset(req.body.username, 'password', req.body.password, redis.print);
+        usersClient.hset(req.body.username, 'bio', req.body.bio, redis.print);
         res.status(200).json({
           message : "Success"
         });
@@ -119,15 +120,14 @@ app.post('/user/update/:token', auth, function(req, res){
     }else{
       usersClient.hgetall(decoded, function(err, user){
         if(user){
-          if(req.body.name){
+          if(req.body.name)
             usersClient.hset(decoded, 'name', req.body.name, redis.print);
-          }
-          if(req.body.password){
-            usersClient.hset(decoded, 'password', req.body.password, redis.print);
-          }
-          if(req.body.organisation){
+          if(req.body.password)
+            usersClient.hset(decoded, 'password', req.body.password, redis.print)
+          if(req.body.organisation)
             usersClient.hset(decoded, 'organisation', req.body.organisation, redis.print);
-          }
+          if(req.body.bio)
+            usersClient.hset(decoded, 'bio', req.body.bio, redis.print);
           res.status(200).json({
             message : "Success"
           });

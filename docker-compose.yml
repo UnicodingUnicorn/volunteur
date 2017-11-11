@@ -29,5 +29,17 @@ services:
       - redis
     networks:
       - redisnet
+  events:
+    build: ./events
+    tty: true
+    environment:
+      - EVENTS_PORT=10203
+      - SECRET=secret
+    ports:
+      - "10203:10203"
+    depends_on:
+      - redis
+    networks:
+      - redisnet
 networks:
   redisnet:
