@@ -94,8 +94,8 @@ app.post('/user/new', auth, function(req, res){
       message : 'Password not found'
     });
   }else{
-    usersClient.hget(req.body.username, 'name', function(err, user){
-      if(user){
+    usersClient.exists(req.body.username, function(err, user_exists){
+      if(user_exists){
         res.status(400).json({
           message : "User already exists"
         });
@@ -153,5 +153,5 @@ app.get('/user/:username', auth, function(req, res){
 });
 
 app.listen(process.env.ACCOUNTS_PORT, function(err){
-  err ? console.error(err) : console.log(("Accounts API up at " + process.env.ACCOUNTS_PORT).rainbow);
+  err ? console.error(err) : console.log(("Accounts API up at " + process.env.ACCOUNTS_PORT).green);
 });
