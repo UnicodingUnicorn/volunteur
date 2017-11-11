@@ -15,6 +15,18 @@ services:
       - "6379:6379" #Open temporarily for debugging
     networks:
       - redisnet
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+    networks:
+      - minionet
+    environment:
+      - MINIO_ACCESS_KEY=ACCESSKEY
+      - MINIO_SECRET_KEY=SECRETKEY
+    volumes:
+      - ./minio:/export
+    command: minio server /export
   admin:
     build: ./admin
     tty: true
@@ -50,6 +62,13 @@ services:
       - redis
     networks:
       - redisnet
+  fileserve:
+    build: ./fileserve
+    tty: true
+    environment:
+      - FILESERVE_PORT=10204
+      - MINIO_ACCESS_KEY=ACCESSKEY
+      - MINIO_SECRET_KEY=SECRETKEY 
   updater:
     build: ./updater
     tty: true
@@ -65,3 +84,4 @@ services:
 networks:
   couchnet:
   redisnet:
+  minionet:
