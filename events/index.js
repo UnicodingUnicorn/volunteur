@@ -159,17 +159,22 @@ app.post("/event/new", auth, function(req, res){
               message : "Event with name already exists"
             });
           }else{
-            eventsClient.lpush('_events', req.body.name, redis.print);
+            eventsClient.lpush('_events', req.body.name);
 
-            eventsClient.hset(req.body.name, 'starttime', req.body.starttime, redis.print);
-            eventsClient.hset(req.body.name, 'endtime', req.body.endtime, redis.print);
-            eventsClient.hset(req.body.name, 'lat', req.body.lat, redis.print);
-            eventsClient.hset(req.body.name, 'lng', req.body.lng, redis.print);
-            eventsClient.hset(req.body.name, 'organisation', req.body.organisation, redis.print);
-            eventsClient.hset(req.body.name, 'organiser', req.body.organiser, redis.print);
-            eventsClient.hset(req.body.name, 'description', req.body.description, redis.print);
-            eventsClient.hset(req.body.name, 'counter', 0, redis.print);
-            eventsClient.hset(req.body.name, 'participants', JSON.stringify([decoded]), redis.print);
+            eventsClient.hset(req.body.name, 'starttime', req.body.starttime);
+            eventsClient.hset(req.body.name, 'endtime', req.body.endtime);
+            if(req.body.lat)
+              eventsClient.hset(req.body.name, 'lat', req.body.lat);
+            if(req.body.lng)
+              eventsClient.hset(req.body.name, 'lng', req.body.lng);
+            if(req.body.size)
+              eventsClient.hset(req.body.name, 'size', req.body.size);
+            eventsClient.hset(req.body.name, 'geo', (req.body.lat && req.body.lng && req.body.size) != undefined);
+            eventsClient.hset(req.body.name, 'organisation', req.body.organisation);
+            eventsClient.hset(req.body.name, 'organiser', req.body.organiser);
+            eventsClient.hset(req.body.name, 'description', req.body.description);
+            eventsClient.hset(req.body.name, 'counter', 0);
+            eventsClient.hset(req.body.name, 'participants', JSON.stringify([decoded]));
 
             res.status(200).json({
               message : "Success"
@@ -191,19 +196,28 @@ app.post("/event/update/:name", auth, function(req, res){
       eventsClient.hget(req.params.name, 'organiser', function(get_err, event_organiser){
         if(event_organiser == decoded){
           if(req.body.starttime)
-            eventsClient.hset(req.body.name, 'starttime', req.body.starttime, redis.print);
+            eventsClient.hset(req.body.name, 'starttime', req.body.starttime);
           if(req.body.endtime)
-            eventsClient.hset(req.body.name, 'endtime', req.body.endtime, redis.print);
+            eventsClient.hset(req.body.name, 'endtime', req.body.endtime);
           if(req.body.lat)
-            eventsClient.hset(req.body.name, 'lat', req.body.lat, redis.print);
+            eventsClient.hset(req.body.name, 'lat', req.body.lat);
           if(req.body.lng)
-            eventsClient.hset(req.body.name, 'lng', req.body.lng, redis.print);
+            eventsClient.hset(req.body.name, 'lng', req.body.lng);
+          if(req.body.size)
+            eventsClient.hset(req.body.name, 'size', req.body.size);
           if(req.body.organisation)
-            eventsClient.hset(req.body.name, 'organisation', req.body.organisation, redis.print);
+            eventsClient.hset(req.body.name, 'organisation', req.body.organisation);
           if(req.body.description)
-            eventsClient.hset(req.body.name, 'description', req.body.description, redis.print);
+            eventsClient.hset(req.body.name, 'description', req.body.description);
           if(req.body.organiser)
-            eventsClient.hset(req.body.name, 'organiser', req.body.organiser, redis.print);
+            eventsClient.hset(req.body.name, 'organiser', req.body.organiser);
+          eventsClient.hget(req.body.name, 'lat', function(getlat_err, lat){
+            eventsClient.hget(req.body.name, 'lng', function(getlng_err, lng){
+              eventsClient.hget(req.body.name, 'size', function(getsize_err, size){
+                eventsClient.hset(req.body.name, 'geo', (lat && lng && size) != undefined);
+              });
+            });
+          });
           res.status(200).json({
             message : "Success"
           });

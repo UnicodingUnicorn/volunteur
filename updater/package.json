@@ -12,6 +12,7 @@
     "async": "^2.6.0",
     "colors": "^1.1.2",
     "couchdb-creator": "^1.0.3",
+    "geolib": "^2.0.24",
     "nano": "^6.4.2",
     "redis": "^2.8.0"
   }

@@ -152,6 +152,41 @@ app.get('/user/:username', auth, function(req, res){
   });
 });
 
+app.post('/position/report', function(req, res){
+  jwt.verify(req.body.token, secret, function(ver_err, decoded){
+    if(ver_err){
+      res.status(403).json({
+        message : "Invalid token"
+      });
+    }else{
+      if(!req.body.lat){
+        res.status(404).json({
+          message : 'Lat not found'
+        });
+      }else if(!req.body.lng){
+        res.status(404).json({
+          message : 'Lng not found'
+        });
+      }else{
+        usersClient.exists(decoded, function(exists_err, client_exists){
+          if(client_exists){
+            usersClient.hset(decoded, 'lat', req.body.lat);
+            usersClient.hset(decoded, 'lng', req.body.lng);
+
+            res.status(200).json({
+              message : "Success"
+            });
+          }else{
+            res.status(404).json({
+              message : "User not found"
+            });
+          }
+        });
+      }
+    }
+  });
+});
+
 app.listen(process.env.ACCOUNTS_PORT, function(err){
   err ? console.error(err) : console.log(("Accounts API up at " + process.env.ACCOUNTS_PORT).green);
 });
