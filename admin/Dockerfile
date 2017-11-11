@@ -1,11 +1,11 @@
 FROM node:latest
-ENV ACCOUNTS_PORT 10203
+ENV ADMIN_PORT 10201
 
 WORKDIR /app
 ADD . /app
 
 RUN npm install
 
-EXPOSE $ACCOUNTS_PORT
+EXPOSE $ADMIN_PORT
 
 CMD ["./wait-for-it.sh", "redis:6379", "--", "node", "index.js"]

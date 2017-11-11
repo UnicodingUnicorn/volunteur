@@ -6,18 +6,28 @@ services:
       - "6379:6379" #Open temporarily for debugging
     networks:
       - redisnet
+  admin:
+    build: ./admin
+    tty: true
+    environment:
+      - ADMIN_PORT=10201
+    ports:
+      - "10201:10201"
+    depends_on:
+      - redis
+    networks:
+      - redisnet
   accounts:
     build: ./accounts
     tty: true
     environment:
-      - ACCOUNTS_PORT=10203
-      - COUCHDB_USER=admin
-      - COUCHDB_PASSWORD=password
+      - ACCOUNTS_PORT=10202
+      - SECRET=secret
     ports:
-      - "10203:10203"
+      - "10202:10202"
     depends_on:
-      - couchdb
+      - redis
     networks:
-      - couchnet
+      - redisnet
 networks:
   redisnet:
