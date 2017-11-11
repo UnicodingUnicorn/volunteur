@@ -1,5 +1,5 @@
 {
-  "name": "events-service",
+  "name": "updater",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,12 +10,10 @@
   "license": "ISC",
   "dependencies": {
     "async": "^2.6.0",
-    "basic-auth": "^2.0.0",
-    "body-parser": "^1.18.2",
     "colors": "^1.1.2",
-    "cors": "^2.8.4",
-    "express": "^4.16.2",
-    "jsonwebtoken": "^8.1.0",
+    "couchdb-creator": "^1.0.3",
+    "geolib": "^2.0.24",
+    "nano": "^6.4.2",
     "redis": "^2.8.0"
   }
 }

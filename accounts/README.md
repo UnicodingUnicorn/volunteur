@@ -43,6 +43,43 @@ Get a user based on username.
 | message | String | Success |
 | user | Object | User object |
 
+#### Error 404
+
+The user the username specifies cannot be found.
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | User not found |
+
+### Get a user by token
+
+```
+GET /user/token/:token
+```
+
+Get a user based on token.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| token | String | User's token.|
+
+#### Success 200
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | Success |
+| user | Object | User object |
+
+#### Error 404
+
+The user the token specifies cannot be found.
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | User not found |
+
 ### Login
 
 ```

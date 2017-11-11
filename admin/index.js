@@ -34,5 +34,5 @@ app.post("/client", function(req, res){
 });
 
 app.listen(process.env.ADMIN_PORT, function(err){
-  err ? console.error(err) : console.log(("Admin Service up at " + process.env.ADMIN_PORT).rainbow);
+  err ? console.error(err) : console.log(("Admin Service up at " + process.env.ADMIN_PORT).green);
 });

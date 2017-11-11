@@ -43,6 +43,64 @@ Get an event based on name.
 | message | String | Success |
 | event | Object | Event object |
 
+### Get all the events
+
+```
+GET /events
+```
+
+Get all the events available.
+
+#### Success 200
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | Success |
+| events | Array | Array containing event objects |
+
+### Get events (by count)
+
+```
+GET /events/:count
+```
+
+Get x number of recent events, where x is the count.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| count | String | Number of events to retrieve |
+
+#### Success 200
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | Success |
+| events | Array | Array containing event objects |
+
+### Get events (by count and with offset)
+
+```
+GET /events/:count/:offset
+```
+
+Get x number of recent events offset by y, where x is the count and y is the offset.
+
+#### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| count | String | Number of events to retrieve |
+| offset | String | Number of events by which to offset the count |
+
+#### Success 200
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | Success |
+| events | Array | Array containing event objects |
+
 ### Add a new event
 
 ```
@@ -59,8 +117,8 @@ Add a new user. Do note that **no** verification for the validity of latlng or t
 | name | String | Event's name |
 | starttime | String | Event's start time, formatted as a JS date-time string. |
 | endtime | String | Event's end time, formatted as a JS date-time string. |
-| lat | String | Latitude of place at which event is occurring |
-| lng | String | Longitude of place at which event is occurring |
+| lat | String | Latitude of place at which event is occurring (OPTIONAL) |
+| lng | String | Longitude of place at which event is occurring (OPTIONAL) |
 | organisation | String | Organisation organising the event |
 | organiser | String | Organiser of the event, usually the user who added it |
 | description | String | Description of the event |
@@ -78,6 +136,14 @@ One of the fields specified in the body is missing.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | message | String | ```foo``` not found, where ```foo``` is the missing field. |
+
+#### Error 400
+
+The event already exists.
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | Event with name already exists |
 
 #### Error 403
 
@@ -115,6 +181,37 @@ All of these fields save the token are optional. If one is not present, it is si
 | organisation | String | Organisation organising the event |
 | organiser | String | Organiser of the event, usually the user who added it |
 | description | String | Description of the event |
+
+#### Error 404
+
+The event the name specifies cannot be found.
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | Event not found |
+
+#### Error 403
+
+The token is invalid.
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | Invalid token |
+
+### Add a user to an event
+
+```
+POST /event/adduser
+```
+
+Add a user to an event.
+
+#### Body
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| token | String | JWT representing the user being added |
+| name | String | Name of the event |
 
 #### Error 404
 
