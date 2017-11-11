@@ -28,7 +28,7 @@ export class TabsPage {
   tab5Root = ProfilePage;
   tab6Root = LoginPage;
 
-  constructor(public tokenProvider: TokenProvider, private events: Events) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public tokenProvider: TokenProvider, private events: Events) {
     events.subscribe('token-update', (token) => {
       this.token = token;
     });
