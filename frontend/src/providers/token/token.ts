@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Events } from 'ionic-angular'
 import { Storage } from '@ionic/storage';
 
 /*
@@ -12,16 +13,19 @@ import { Storage } from '@ionic/storage';
 export class TokenProvider {
   public token:string = undefined;
 
-  constructor(public storage:Storage) {
-    console.log('Hello TokenProvider Provider');
-    storage.get('token').then((val) => {
-      this.token = val;
+  constructor(public storage:Storage, public events:Events) {
+    storage.ready().then(() => {
+      storage.get('token').then((val) => {
+        this.token = val;
+        this.events.publish('token-update', this.token);
+      });
     });
   }
 
   setToken(token){
     this.token = token;
     this.storage.set('token', token);
+    this.events.publish('token-update', this.token);
   }
 
 }

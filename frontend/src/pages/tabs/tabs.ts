@@ -10,6 +10,8 @@ import { LoginPage } from '../login/login';
 
 import { TokenProvider } from '../../providers/token/token'
 
+import { Events } from 'ionic-angular'
+
 @Component({
   templateUrl: 'tabs.html'
 })
@@ -24,8 +26,10 @@ export class TabsPage {
   tab5Root = ProfilePage;
   tab6Root = LoginPage;
 
-  constructor(public tokenProvider: TokenProvider) {
-    this.token = tokenProvider.token;
+  constructor(public tokenProvider: TokenProvider, private events:Events) {
+    events.subscribe('token-update', (token) => {
+      this.token = token;
+    });
   }
 
 }
