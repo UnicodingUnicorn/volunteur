@@ -54,7 +54,7 @@ app.get('/', function(req, res){
   });
 });
 
-app.post('/login', auth, function(req, res){
+app.post('/login', function(req, res){
   if(!req.body.username){
     res.status(404).json({
       message : 'Username not found'
