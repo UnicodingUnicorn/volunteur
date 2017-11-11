@@ -13,7 +13,7 @@ import { Storage } from '@ionic/storage';
 export class TokenProvider {
   public token:string = undefined;
 
-  constructor(public storage:Storage, public events:Events) {
+  constructor(public storage: Storage, public events: Events) {
     storage.ready().then(() => {
       storage.get('token').then((val) => {
         this.token = val;
