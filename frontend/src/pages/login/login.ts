@@ -30,6 +30,7 @@ export class LoginPage {
   bgClass:string = Math.round(Math.random()) ? "bg-1" : "bg-2";
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private http:HttpClient, private tokenProvider:TokenProvider, private tc:ToastController) {
+    console.log(this.bgClass);
   }
 
   ionViewDidLoad() {

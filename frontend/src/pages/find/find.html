@@ -7,14 +7,11 @@
 <ion-content>
 
   <h1 padding>Recommended for you</h1>
-  <ion-card class="card-image" style="background-image: url('/assets/imgs/1.jpg')" (click)="openEvent('Isaac is really cool')">
-    <h3 class="card-title">Some Event Name</h3>
-    <div class="card-subtitle">Lion Befrienders</div>
+  <ion-card *ngFor="let e of events" class="card-image" style="background-image: url('/assets/imgs/1.jpg')" (click)="openEvent(e.name)">
+    <h3 class="card-title">{{e.name}}</h3>
+    <div class="card-subtitle">{{e.organisation}}</div>
   </ion-card>
-  <ion-card class="card-image" style="background-image: url('/assets/imgs/2.jpg')">
-    <h3 class="card-title">Repair Kopitiam November</h3>
-    <div class="card-subtitle">Repair Kopitiam</div>
-  </ion-card>
+
   <ion-list no-lines>
     <button ion-item (click)="return">
       View more
