@@ -50,9 +50,9 @@ export class LoginPage {
     }, {}).subscribe((data: any) => {
       this.tokenProvider.setToken(data.token);
       this.onLoginSuccess();
-    }, (err) => {
+    }, (res) => {
       let toast = this.tc.create({
-        message : err.message,
+        message : res.body.message,
         duration : 2500,
         position : 'bottom'
       });

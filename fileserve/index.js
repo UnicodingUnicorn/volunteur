@@ -61,8 +61,8 @@ app.post('/file', upload.single('file'), function(req, res){
           message : "Storage does not exist."
         });
       }else{
-        var rs = streamifier.createReadStream(req.file.buffer);
-        mClient.putObject('files', uniqid() + req.file.originalname.split('.')[req.file.originalname.split('.').length - 1], req.file.buffer, function(put_err, etag){
+        var fileName = uniqid() + req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
+        mClient.putObject('files', fileName, req.file.buffer, function(put_err, etag){
           if(put_err){
             console.log(put_err);
             res.status(500).json({
@@ -70,7 +70,8 @@ app.post('/file', upload.single('file'), function(req, res){
             });
           }else{
             res.status(200).json({
-              message : "Success"
+              message : "Success",
+              filename : fileName
             });
           }
         });

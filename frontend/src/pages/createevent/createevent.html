@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-searchbar (ionInput)="return"></ion-searchbar>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <h1 padding>Create event</h1>
+
+  <ion-list>
+
+    <ion-item>
+      <ion-label floating>Name</ion-label>
+      <ion-input type="text" [(ngModel)]="name"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Description</ion-label>
+      <ion-input type="text" [(ngModel)]="description"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Organisation</ion-label>
+      <ion-input type="text" [(ngModel)]="organisation"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Max Participants (Optional, 0 to ignore)</ion-label>
+      <ion-input type="number" [(ngModel)]="max_participants"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Start Time</ion-label>
+      <ion-datetime displayFormat="DD-MM-YYYY, HH:mm" [(ngModel)]="starttime"></ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>End Time</ion-label>
+      <ion-datetime displayFormat="DD-MM-YYYY, HH:mm" [(ngModel)]="endtime"></ion-datetime>
+    </ion-item>
+
+  </ion-list>
+
+  <div padding>
+    <button ion-button block round (click)="createevent()">Create</button>
+  </div>
+
+</ion-content>

@@ -14,8 +14,8 @@ import { UpdatesPage } from '../pages/updates/updates';
 import { ProfilePage } from '../pages/profile/profile';
 import { TabsPage } from '../pages/tabs/tabs';
 import { SignupPage } from '../pages/signup/signup';
-
 import { EventPage } from '../pages/event/event';
+import { CreateEventPage } from '../pages/createevent/createevent';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -33,7 +33,8 @@ import { TokenProvider } from '../providers/token/token';
     ProfilePage,
     TabsPage,
     EventPage,
-    SignupPage
+    SignupPage,
+    CreateEventPage
   ],
   imports: [
     BrowserModule,
@@ -52,7 +53,8 @@ import { TokenProvider } from '../providers/token/token';
     ProfilePage,
     TabsPage,
     EventPage,
-    SignupPage
+    SignupPage,
+    CreateEventPage
   ],
   providers: [
     StatusBar,
