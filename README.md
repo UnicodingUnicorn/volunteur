@@ -3,13 +3,15 @@
   <img src="assets/volunteur.png" width="256" />
 </div>
 
-<h1 align="center">
+<h1 align="center" style="color: #ff9800">
   Volunteur
 </h1>
 
 <p align="center">
   Bringing the fun back into volunteering
 </p>
+
+<br>
 
 # What's in the name?
 
