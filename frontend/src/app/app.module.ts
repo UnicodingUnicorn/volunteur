@@ -13,6 +13,7 @@ import { GoingPage } from '../pages/going/going';
 import { UpdatesPage } from '../pages/updates/updates';
 import { ProfilePage } from '../pages/profile/profile';
 import { TabsPage } from '../pages/tabs/tabs';
+import { SignupPage } from '../pages/signup/signup';
 
 import { EventPage } from '../pages/event/event';
 
@@ -31,7 +32,8 @@ import { TokenProvider } from '../providers/token/token';
     UpdatesPage,
     ProfilePage,
     TabsPage,
-    EventPage
+    EventPage,
+    SignupPage
   ],
   imports: [
     BrowserModule,
@@ -49,7 +51,8 @@ import { TokenProvider } from '../providers/token/token';
     UpdatesPage,
     ProfilePage,
     TabsPage,
-    EventPage
+    EventPage,
+    SignupPage
   ],
   providers: [
     StatusBar,
