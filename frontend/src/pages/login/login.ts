@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { TokenProvider } from '../../providers/token/token'
 
-import { config } from '../../config'
+import config from '../../config'
 
 /**
  * Generated class for the LoginPage page.
@@ -23,8 +23,8 @@ import { config } from '../../config'
 })
 export class LoginPage {
 
-  username:string = '';
-  password:string = '';
+  username:string = 'meow';
+  password:string = 'kitty';
   
   constructor(public navCtrl: NavController, public navParams: NavParams, private http:HttpClient, private tokenProvider:TokenProvider) {
   }
@@ -42,7 +42,7 @@ export class LoginPage {
   login(){
     console.log(this.username);
     console.log(this.password);
-    this.http.post("http://192.168.99.100:10202" + '/login', {
+    this.http.post(config.ACCOUNTS_URL + '/login', {
       username : this.username,
       password : this.password
     }, {
