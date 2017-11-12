@@ -216,6 +216,8 @@ app.post("/event/update/:name", auth, function(req, res){
             eventsClient.hset(req.body.name, 'size', req.body.size);
           if(req.body.organisation)
             eventsClient.hset(req.body.name, 'organisation', req.body.organisation);
+          if(req.body.max_participants)
+            eventsClient.hset(req.body.name, 'max_paticipants', req.body.max_participants);
           if(req.body.description)
             eventsClient.hset(req.body.name, 'description', req.body.description);
           if(req.body.organiser)

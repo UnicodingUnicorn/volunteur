@@ -8,12 +8,35 @@
 
   <img class="header-picture" src="/assets/imgs/1.jpg">
 
-  <h4 padding>
-    {{organisation}}
-  </h4>
+  <ion-list margin-vertical>
 
-  <div padding>
-    {{description}}
-  </div>
+    <ion-item>
+      Organisation
+      <ion-note item-end>{{organisation}}</ion-note>
+    </ion-item>
+
+    <ion-item>
+      Organiser
+      <ion-note item-end>{{organiser}}</ion-note>
+    </ion-item>
+
+  </ion-list>
+
+  <p margin-horizontal>{{description}}</p>
+  
+  <ion-list margin-vertical>
+
+    <ion-item>
+      Volunteers
+      <ion-note item-end>{{num_participants}} of {{max_participants}}</ion-note>
+    </ion-item>
+
+    <ion-item>
+      Volunteer for event?
+      <button ion-button [clear]="is_participating" item-end>Yes</button>
+      <button ion-button [clear]="!is_participating" item-end>No</button>
+    </ion-item>
+
+  </ion-list>
 
 </ion-content>
