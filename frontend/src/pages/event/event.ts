@@ -23,8 +23,12 @@ export class EventPage {
   name:string = ""
   description:string = ""
   organisation:string = ""
+  organiser:string = ""
   starttime:string = ""
   endtime:string = ""
+  num_participants:number = 0
+  max_participants:number = 10
+  is_participating:boolean = false
 
   token = undefined;
 
@@ -43,8 +47,17 @@ export class EventPage {
     }).subscribe((data: any) => {
       this.description = data.event.description;
       this.organisation = data.event.organisation;
+      this.organiser = data.event.organiser;
       this.starttime = data.event.starttime;
       this.endtime = data.event.endtime;
+      this.num_participants = data.event.participants.length;
+      this.max_participants = data.event.max_participants;
+      this.http.get(config.ACCOUNTS_URL + '/user/token/' + this.token, {
+      }).subscribe((data: any) => {
+        if (data.user.events.indexOf(this.name)) {
+          this.is_participating = true;
+        }
+      });
     }, (err) => {
       console.log(err);
     });

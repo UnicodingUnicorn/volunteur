@@ -7,11 +7,11 @@
 <ion-content padding-top>
 
   <div padding text-center>
-    <img class="avatar" src="/assets/imgs/p1.jpg" width="128" />
+    <img class="avatar" src="assets/imgs/p1.jpg" width="128" />
     <h1 class="name">{{username}} ({{name}})</h1>
   </div>
 
-  <ion-list>
+  <ion-list margin-vertical>
 
     <ion-item>
       <!--<ion-icon name='flame' item-start></ion-icon>-->
@@ -33,14 +33,14 @@
 
   </ion-list>
 
-  <p padding>{{bio}}</p>
+  <p margin-horizontal>{{bio}}</p>
 
-  <h4 padding>Events attended</h4>
+  <h4 padding-top margin>Events attended</h4>
 
-  <ion-list>
+  <ion-list margin-vertical>
     <ion-item *ngFor="let e of attended_events">
       <ion-thumbnail item-start>
-        <img src="/assets/imgs/5.jpg">
+        <img src="assets/imgs/5.jpg">
       </ion-thumbnail>
       <h2>{{e.name}}</h2>
       <p class="wrap-multiline">{{e.description}}</p>
