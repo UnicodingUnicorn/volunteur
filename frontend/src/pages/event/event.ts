@@ -54,13 +54,27 @@ export class EventPage {
       this.max_participants = data.event.max_participants;
       this.http.get(config.ACCOUNTS_URL + '/user/token/' + this.token, {
       }).subscribe((data: any) => {
-        if (data.user.events.indexOf(this.name)) {
+        if (data.user.events.indexOf(this.name) >= 0) {
           this.is_participating = true;
         }
       });
     }, (err) => {
       console.log(err);
     });
+  }
+
+  setGoing(bool) {
+    if (!bool) {
+      return
+    }
+    this.http.post(config.EVENTS_URL + '/event/adduser', {
+      name: this.name,
+      token: this.token
+    }).subscribe((data: any) => {
+    }, (err) => {
+      console.log(err);
+    });
+    this.ionViewDidLoad();
   }
 
 }

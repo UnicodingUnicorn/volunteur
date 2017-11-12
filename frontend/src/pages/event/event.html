@@ -33,8 +33,8 @@
 
     <ion-item>
       Volunteer for event?
-      <button ion-button [clear]="is_participating" item-end>Yes</button>
-      <button ion-button [clear]="!is_participating" item-end>No</button>
+      <button ion-button [clear]="is_participating" item-end (click)="setGoing(true)">Yes</button>
+      <button ion-button [clear]="!is_participating" item-end (click)="setGoing(false)">No</button>
     </ion-item>
 
   </ion-list>
