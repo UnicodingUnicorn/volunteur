@@ -42,7 +42,7 @@ export class LoginPage {
   login(){
     console.log(this.username);
     console.log(this.password);
-    this.http.post("http://192.168.99.100:10202" + '/login', {
+    this.http.post(config.ACCOUNTS_URL + '/login', {
       username : this.username,
       password : this.password
     }, {
