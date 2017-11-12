@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, ToastController, Events } from 'io
 
 import { HttpClient } from '@angular/common/http';
 import { TokenProvider } from '../../providers/token/token'
+import { FindPage } from '../find/find'
 
 import config from '../../config'
 
@@ -25,7 +26,6 @@ export class CreateEventPage {
   max_paticipants:string = "0";
   starttime:string = "";
   endtime:string = "";
-  maximum:string = "";
 
   token:string = "";
 
@@ -53,12 +53,19 @@ export class CreateEventPage {
       this.starttime = '';
       this.endtime = ''
     }else{
-      this.http.post(config.EVENTS_URL + '/login', {
-        username : this.username,
-        password : this.password
+      this.http.post(config.EVENTS_URL + '/event/new', {
+        name : this.name,
+        description : this.description
       }, {}).subscribe((data: any) => {
-        this.tokenProvider.setToken(data.token);
-        this.onLoginSuccess();
+        let toast = this.tc.create({
+          message : 'Added new event successfully!',
+          duration : 2500,
+          position : 'bottom'
+        });
+        toast.present();
+        this.navCtrl.push(FindPage).then(() => {
+          this.navCtrl.remove(0)
+        });
       }, (res) => {
         let toast = this.tc.create({
           message : res.body.message,
