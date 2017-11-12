@@ -53,7 +53,7 @@ export class LoginPage {
     }, (res) => {
       console.log(res);
       let toast = this.tc.create({
-        message : res,
+        message : res.error.message,
         duration : 2500,
         position : 'bottom'
       });
