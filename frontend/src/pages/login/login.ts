@@ -46,7 +46,7 @@ export class LoginPage {
       username : this.username,
       password : this.password
     }, {
-      headers : new HttpHeaders().set('Authorization', 'Basic ' + btoa(config.CLIENT_ID + ':' + config.CLIENT_SECRET))
+      //headers : new HttpHeaders().set('Authorization', 'Basic ' + btoa(config.CLIENT_ID + ':' + config.CLIENT_SECRET))
     }).subscribe((data: any) => {
       this.tokenProvider.setToken(data.token);
       this.onLoginSuccess();
