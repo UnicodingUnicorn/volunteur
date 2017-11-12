@@ -29,8 +29,9 @@ app.use(bodyParser.urlencoded({extended : true}));
 app.use(cors());
 
 var auth = function(req, res, next){
+  return next();
   var credentials = basicauth(req);
-  if(credentials.name && credentials.pass){
+  if(credentials && credentials.name && credentials.pass){
     clientsClient.get(credentials.name, function(err, pass){
       if(err){
         res.status(403).json({
@@ -61,6 +62,7 @@ app.get('/', function(req, res){
 
 app.get('/event/:name', auth, function(req, res){
   eventsClient.hgetall(req.params.name, function(err, eventfields){
+    eventfields.name = req.params.name;
     res.status(200).json({
       message : "Success",
       event : eventfields

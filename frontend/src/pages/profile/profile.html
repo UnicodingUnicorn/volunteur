@@ -8,15 +8,15 @@
 
   <div padding text-center>
     <img class="avatar" src="/assets/imgs/p1.jpg" width="128" />
-    <h1 class="name">Ambrose Chua</h1>
+    <h1 class="name">{{username}} ({{name}})</h1>
   </div>
-  
+
   <ion-list>
 
     <ion-item>
       <!--<ion-icon name='flame' item-start></ion-icon>-->
       Points
-      <ion-note color="primary" item-end>346</ion-note>
+      <ion-note color="primary" item-end>{{score}}</ion-note>
     </ion-item>
 
     <ion-item>
@@ -33,31 +33,17 @@
 
   </ion-list>
 
-  <p padding>just another full-stack dev. does a bit of embedded hw/sw, loves ops and datacenters (and now ctfs). nus high, qtps. </p>
+  <p padding>{{bio}}</p>
 
   <h4 padding>Events attended</h4>
 
   <ion-list>
-    <ion-item>
+    <ion-item *ngFor="let e of events">
       <ion-thumbnail item-start>
         <img src="/assets/imgs/5.jpg">
       </ion-thumbnail>
-      <h2>Some event</h2>
-      <p class="wrap-multiline">Lion Befrienders</p>
-    </ion-item>
-    <ion-item>
-      <ion-thumbnail item-start>
-        <img src="/assets/imgs/6.jpg">
-      </ion-thumbnail>
-      <h2>Another Event</h2>
-      <p class="wrap-multiline">Some Organisation</p>
-    </ion-item>
-    <ion-item>
-      <ion-thumbnail item-start>
-        <img src="/assets/imgs/7.jpg">
-      </ion-thumbnail>
-      <h2>Hack for Good</h2>
-      <p class="wrap-multiline">Youth Corps</p>
+      <h2>{{e.name}}</h2>
+      <p class="wrap-multiline">{{e.description}}</p>
     </ion-item>
   </ion-list>
 
