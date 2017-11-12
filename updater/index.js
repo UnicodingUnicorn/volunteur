@@ -12,22 +12,6 @@ var usersClient = redis.createClient({
   db : 0
 });
 
-var nano = require("nano")("http://" + process.env.COUCHDB_USER + ":" + process.env.COUCHDB_PASSWORD + "@couchdb:5984");
-var creator = require("couchdb-creator");
-var archives_design = {
-  'views' : {
-    'by_name' : {
-      'map' : function(doc){
-        emit(doc.name, doc._id);
-      }
-    }
-  }
-};
-var archives;
-creator(nano, 'archives', {name : 'archives', doc : archives_design}, function(db){
-  archives = db;
-});
-
 var update = function(){
   setTimeout(update, 60 * 1000);
   eventsClient.lrange('_events', 0, -1, function(err, keys){
