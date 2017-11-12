@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController, Events } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController, Events, Tabs } from 'ionic-angular';
 
 import { HttpClient } from '@angular/common/http';
 import { TokenProvider } from '../../providers/token/token'
@@ -68,9 +68,11 @@ export class CreateEventPage {
           position : 'bottom'
         });
         toast.present();
-        this.navCtrl.push(FindPage).then(() => {
-          this.navCtrl.remove(0)
-        });
+        var t:Tabs = this.navCtrl.parent;
+        t.select(0);
+        // this.navCtrl.push(FindPage).then(() => {
+        //   this.navCtrl.remove(0)
+        // });
       }, (res) => {
         console.log(res);
         let toast = this.tc.create({
