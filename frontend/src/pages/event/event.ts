@@ -21,7 +21,10 @@ import config from '../../config'
 export class EventPage {
 
   name:string = ""
-  description = ""
+  description:string = ""
+  organisation:string = ""
+  starttime:string = ""
+  endtime:string = ""
 
   token = undefined;
 
@@ -35,10 +38,13 @@ export class EventPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad EventPage');
-    this.http.get(config.EVENTS_URL + '/event/' + name, {
+    this.http.get(config.EVENTS_URL + '/event/' + encodeURIComponent(this.name), {
       //headers : new HttpHeaders().set('Authorization', 'Basic ' + btoa(config.CLIENT_ID + ':' + config.CLIENT_SECRET))
     }).subscribe((data: any) => {
       this.description = data.event.description;
+      this.organisation = data.event.organisation;
+      this.starttime = data.event.starttime;
+      this.endtime = data.event.endtime;
     }, (err) => {
       console.log(err);
     });
