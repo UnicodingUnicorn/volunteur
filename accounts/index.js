@@ -24,6 +24,7 @@ app.use(bodyParser.urlencoded({extended : true}));
 app.use(cors());
 
 var auth = function(req, res, next){
+  return next();
   var credentials = basicauth(req);
   if(credentials && credentials.name && credentials.pass){
     clientsClient.get(credentials.name, function(err, pass){
