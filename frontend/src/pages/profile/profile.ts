@@ -21,7 +21,7 @@ export class ProfilePage {
   name = "";
   score = 0;
   bio = "";
-  events = [];
+  attended_events = [];
 
   token = undefined;
 
@@ -44,8 +44,7 @@ export class ProfilePage {
       var user_events = JSON.parse(data.user.events);
       for(var i = 0; i < user_events.length; i++){
         this.http.get("http://192.168.99.100:10203" + "/event/" + user_events[i]).subscribe((data:any) => {
-          console.log(data.event);
-          this.events.push(data.event);
+          this.attended_events.push(data.event);
         });
       }
     }, (err) => {

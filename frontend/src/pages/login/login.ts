@@ -25,7 +25,7 @@ export class LoginPage {
 
   username:string = 'meow';
   password:string = 'kitty';
-  
+
   constructor(public navCtrl: NavController, public navParams: NavParams, private http:HttpClient, private tokenProvider:TokenProvider) {
   }
 
@@ -38,16 +38,12 @@ export class LoginPage {
       this.navCtrl.remove(0)
     });
   }
-  
+
   login(){
-    console.log(this.username);
-    console.log(this.password);
     this.http.post(config.ACCOUNTS_URL + '/login', {
       username : this.username,
       password : this.password
-    }, {
-      //headers : new HttpHeaders().set('Authorization', 'Basic ' + btoa(config.CLIENT_ID + ':' + config.CLIENT_SECRET))
-    }).subscribe((data: any) => {
+    }, {}).subscribe((data: any) => {
       this.tokenProvider.setToken(data.token);
       this.onLoginSuccess();
     }, (err) => {
