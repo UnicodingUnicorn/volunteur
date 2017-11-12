@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
+import { HttpClient } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
+import { TokenProvider } from '../../providers/token/token';
+
+import config from '../../config'
 
 /**
  * Generated class for the EventPage page.
@@ -15,11 +20,28 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class EventPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  name:string = ""
+  description = ""
+
+  token = undefined;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, private events:Events, private http:HttpClient, private tokenProvider:TokenProvider) {
+    this.token = tokenProvider.token;
+    events.subscribe('token-update', (token) => {
+      this.token = token;
+    });
+    this.name = this.navParams.get('id');
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad EventPage');
+    this.http.get(config.EVENTS_URL + '/event/' + name, {
+      //headers : new HttpHeaders().set('Authorization', 'Basic ' + btoa(config.CLIENT_ID + ':' + config.CLIENT_SECRET))
+    }).subscribe((data: any) => {
+      this.description = data.event.description;
+    }, (err) => {
+      console.log(err);
+    });
   }
 
 }
