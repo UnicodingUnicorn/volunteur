@@ -3,7 +3,7 @@
   <img src="assets/volunteur.png" width="256" />
 </div>
 
-<h1 align="center" color="#ff9800">
+<h1 align="center">
   Volunteur
 </h1>
 
