@@ -23,7 +23,7 @@ export class CreateEventPage {
   name:string = "";
   description:string = "";
   organisation:string = "";
-  max_paticipants:string = "0";
+  max_participants:string = "0";
   starttime:string = "";
   endtime:string = "";
 
@@ -54,8 +54,13 @@ export class CreateEventPage {
       this.endtime = ''
     }else{
       this.http.post(config.EVENTS_URL + '/event/new', {
+        token : this.token,
         name : this.name,
-        description : this.description
+        description : this.description,
+        organisation : this.organisation,
+        max_participants : this.max_participants,
+        starttime : this.starttime,
+        endtime : this.endtime
       }, {}).subscribe((data: any) => {
         let toast = this.tc.create({
           message : 'Added new event successfully!',
@@ -67,8 +72,9 @@ export class CreateEventPage {
           this.navCtrl.remove(0)
         });
       }, (res) => {
+        console.log(res);
         let toast = this.tc.create({
-          message : res.body.message,
+          message : res.error.message,
           duration : 2500,
           position : 'bottom'
         });

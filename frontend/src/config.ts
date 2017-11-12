@@ -1,7 +1,7 @@
 
-//const HOST = "10.185.0.199";
+const HOST = "10.185.0.199";
 //const HOST = "192.168.99.100";
-const HOST = window.location.hostname;
+// const HOST = window.location.hostname;
 
 const CLIENT_ID = "";
 const CLIENT_SECRET = "";

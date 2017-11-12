@@ -51,8 +51,9 @@ export class LoginPage {
       this.tokenProvider.setToken(data.token);
       this.onLoginSuccess();
     }, (res) => {
+      console.log(res);
       let toast = this.tc.create({
-        message : res.body.message,
+        message : res,
         duration : 2500,
         position : 'bottom'
       });
