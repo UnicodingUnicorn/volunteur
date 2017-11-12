@@ -28,13 +28,13 @@
 
     <ion-item>
       Volunteers
-      <ion-note item-end>{{num_participants}} of {{max_participants}}</ion-note>
+      <ion-note item-end>{{num_participants}}<span *ngIf="max_participants"> of {{max_participants}}</span></ion-note>
     </ion-item>
 
     <ion-item>
       Volunteer for event?
-      <button ion-button [clear]="is_participating" item-end (click)="setGoing(true)">Yes</button>
-      <button ion-button [clear]="!is_participating" item-end (click)="setGoing(false)">No</button>
+      <button ion-button [clear]="!is_participating" item-end (click)="setGoing(true)">Yes</button>
+      <button ion-button [clear]="is_participating" item-end (click)="setGoing(false)">No</button>
     </ion-item>
 
   </ion-list>

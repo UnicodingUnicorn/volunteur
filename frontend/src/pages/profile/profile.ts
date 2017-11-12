@@ -40,7 +40,7 @@ export class ProfilePage {
     }).subscribe((data: any) => {
       this.username = data.user.username;
       this.name = data.user.name;
-      this.score = data.user.score;
+      this.score = data.user.score || 0;
       this.bio = data.user.bio;
       var user_events = JSON.parse(data.user.events);
       for(var i = 0; i < user_events.length; i++){

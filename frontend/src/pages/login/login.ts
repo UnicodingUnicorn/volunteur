@@ -24,8 +24,8 @@ import config from '../../config'
 })
 export class LoginPage {
 
-  username:string = 'meow';
-  password:string = 'kitty';
+  username:string = '';
+  password:string = '';
 
   bgClass:string = Math.round(Math.random()) ? "bg-1" : "bg-2";
 
