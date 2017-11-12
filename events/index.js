@@ -165,25 +165,31 @@ app.post("/event/new", auth, function(req, res){
 
             eventsClient.hset(req.body.name, 'starttime', req.body.starttime);
             eventsClient.hset(req.body.name, 'endtime', req.body.endtime);
+
             if(req.body.lat)
               eventsClient.hset(req.body.name, 'lat', req.body.lat);
             if(req.body.lng)
               eventsClient.hset(req.body.name, 'lng', req.body.lng);
             if(req.body.size)
               eventsClient.hset(req.body.name, 'size', req.body.size);
+
             eventsClient.hset(req.body.name, 'geo', (req.body.lat && req.body.lng && req.body.size) != undefined);
+
             eventsClient.hset(req.body.name, 'organisation', req.body.organisation);
             eventsClient.hset(req.body.name, 'organiser', decoded);
-            usersClient.hget(req.body.organiser, 'events', function(getevents_err, raw_events){
+
+            usersClient.hget(decoded, 'events', function(getevents_err, raw_events){
               var events = JSON.parse(raw_events);
               events.push(req.body.name);
-              usersClient.hset(req.body.organiser, 'events', JSON.stringify(events));
+              usersClient.hset(decoded, 'events', JSON.stringify(events));
             });
             eventsClient.hset(req.body.name, 'description', req.body.description);
             eventsClient.hset(req.body.name, 'counter', 0);
-            eventsClient.hset(req.body.name, 'max_paticipants', req.body.max_participants);
+            if(req.body.max_participants)
+              eventsClient.hset(req.body.name, 'max_paticipants', req.body.max_participants);
             eventsClient.hset(req.body.name, 'participants', JSON.stringify([decoded]));
-            eventsClient.hset(req.body.name, 'picture', req.body.picture);
+            if(req.body.picture)
+              eventsClient.hset(req.body.name, 'picture', req.body.picture);
 
             res.status(200).json({
               message : "Success"
@@ -254,7 +260,7 @@ app.post("/event/adduser", function(req, res){
       eventsClient.hget(req.body.name, 'participants', function(get_err, raw_participants){
         if(raw_participants){
           var participants = JSON.parse(raw_participants);
-          if(!participants.include(decoded))
+          if(!participants.includes(decoded))
             participants.push(decoded);
           eventsClient.hset(req.body.name, 'participants', JSON.stringify(participants));
           usersClient.hget(decoded, 'events', function(getevents_err, raw_events){
