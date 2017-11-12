@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 
 import { TabsPage } from '../tabs/tabs';
+import { SignupPage } from '../signup/signup';
 
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
@@ -26,7 +27,7 @@ export class LoginPage {
   username:string = 'meow';
   password:string = 'kitty';
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http:HttpClient, private tokenProvider:TokenProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private http:HttpClient, private tokenProvider:TokenProvider, private tc:ToastController) {
   }
 
   ionViewDidLoad() {
@@ -47,8 +48,17 @@ export class LoginPage {
       this.tokenProvider.setToken(data.token);
       this.onLoginSuccess();
     }, (err) => {
-      console.log(err);
+      let toast = this.tc.create({
+        message : err.message,
+        duration : 2500,
+        position : 'bottom'
+      });
+      toast.present();
     });
+  }
+
+  showSignup(){
+    this.navCtrl.push(SignupPage);
   }
 
 }

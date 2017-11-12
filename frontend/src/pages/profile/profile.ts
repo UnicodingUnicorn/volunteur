@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { TokenProvider } from '../../providers/token/token';
 
+import config from '../../config'
 /**
  * Generated class for the ProfilePage page.
  *
@@ -34,7 +35,7 @@ export class ProfilePage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ProfilePage');
-    this.http.get("http://192.168.99.100:10202" + '/user/token/' + this.token, {
+    this.http.get(config.ACCOUNTS_URL + '/user/token/' + this.token, {
       //headers : new HttpHeaders().set('Authorization', 'Basic ' + btoa(config.CLIENT_ID + ':' + config.CLIENT_SECRET))
     }).subscribe((data: any) => {
       this.username = data.user.username;
@@ -43,7 +44,7 @@ export class ProfilePage {
       this.bio = data.user.bio;
       var user_events = JSON.parse(data.user.events);
       for(var i = 0; i < user_events.length; i++){
-        this.http.get("http://192.168.99.100:10203" + "/event/" + user_events[i]).subscribe((data:any) => {
+        this.http.get(config.EVENTS_URL + "/event/" + user_events[i]).subscribe((data:any) => {
           this.attended_events.push(data.event);
         });
       }
