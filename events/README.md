@@ -6,7 +6,7 @@ The default port for this service is ```10203```.
 
 ## API
 
-Every endpoint save the ping requires the client id and secret provided in the form of a basicauth header.
+Every endpoint save the ping requires a client id and secret provided in the form of a basicauth header.
 
 ### Ping API
 
@@ -20,7 +20,9 @@ Just returns a simple received message. Helpful for finding if the API is up.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| message | String | Received at Accounts API|
+| message | String | Received at Accounts API |
+
+---
 
 ### Get an event by name
 
@@ -43,6 +45,16 @@ Get an event based on name.
 | message | String | Success |
 | event | Object | Event object |
 
+#### Error 404
+
+The event the event name specifies cannot be found.
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | Event not found |
+
+---
+
 ### Get all the events
 
 ```
@@ -57,6 +69,8 @@ Get all the events available.
 | ---- | ---- | ----------- |
 | message | String | Success |
 | events | Array | Array containing event objects |
+
+---
 
 ### Get events (by count)
 
@@ -78,6 +92,8 @@ Get x number of recent events, where x is the count.
 | ---- | ---- | ----------- |
 | message | String | Success |
 | events | Array | Array containing event objects |
+
+---
 
 ### Get events (by count and with offset)
 
@@ -101,27 +117,33 @@ Get x number of recent events offset by y, where x is the count and y is the off
 | message | String | Success |
 | events | Array | Array containing event objects |
 
+---
+
 ### Add a new event
 
 ```
 POST /event/new
 ```
 
-Add a new user. Do note that **no** verification for the validity of latlng or the like is done on the backend.
+Add a new user. Do note that **no** verification for the validity of latlng, start and end times or the like is done on the backend.
 
 #### Body
 
+Optional fields are marked (OPTIONAL). All geolocation fields (lat, lng and size) need to be filled in to enable geolocation.
+
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| token | String | JWT representing the user adding the event |
+| token | String | JWT representing the user adding the event, who will be henceforth marked the organiser. |
 | name | String | Event's name |
 | starttime | String | Event's start time, formatted as a JS date-time string. |
 | endtime | String | Event's end time, formatted as a JS date-time string. |
-| lat | String | Latitude of place at which event is occurring (OPTIONAL) |
-| lng | String | Longitude of place at which event is occurring (OPTIONAL) |
-| organisation | String | Organisation organising the event |
-| organiser | String | Organiser of the event, usually the user who added it |
-| description | String | Description of the event |
+| organisation | String | Organisation organising the event. |
+| description | String | Description of the event. |
+| lat | String | Latitude of place at which event is occurring. (OPTIONAL) |
+| lng | String | Longitude of place at which event is occurring. (OPTIONAL) |
+| size | String | Radius in which the event occurs around the latlng. (OPTIONAL) |
+| max_participants | String | Maximum number of participants in event. (OPTIONAL) |
+| picture | String | URL to picture relating to the event. (OPTIONAL) |
 
 #### Success 200
 
@@ -139,7 +161,7 @@ One of the fields specified in the body is missing.
 
 #### Error 400
 
-The event already exists.
+The event already exists. Alternatively, the start or end times are formatted inaccurately.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -152,6 +174,8 @@ The token is invalid.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | message | String | Invalid token |
+
+---
 
 ### Update an event's information
 
@@ -169,7 +193,7 @@ Update an event's information. Do note that **no** verification for the validity
 
 #### Body
 
-All of these fields save the token are optional. If one is not present, it is simply not updated.
+All of these fields save the token are optional. If one is not present, it is simply not updated. Lat and lng have to be updated together, or they would not be updated at all.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -178,8 +202,11 @@ All of these fields save the token are optional. If one is not present, it is si
 | endtime | String | Event's end time, formatted as a JS date-time string. |
 | lat | String | Latitude of place at which event is occurring |
 | lng | String | Longitude of place at which event is occurring |
+| size | String | Radius in which the event occurs around the latlng. |
+| max_participants | String | Maximum number of participants in event. |
+| picture | String | URL to picture relating to the event. |
 | organisation | String | Organisation organising the event |
-| organiser | String | Organiser of the event, usually the user who added it |
+| organiser | String | Organiser of the event |
 | description | String | Description of the event |
 
 #### Error 404
@@ -197,6 +224,8 @@ The token is invalid.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | message | String | Invalid token |
+
+---
 
 ### Add a user to an event
 

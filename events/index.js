@@ -62,15 +62,21 @@ app.get('/', function(req, res){
 
 app.get('/event/:name', auth, function(req, res){
   eventsClient.hgetall(req.params.name, function(err, eventfields){
-    eventfields.name = req.params.name;
-    res.status(200).json({
-      message : "Success",
-      event : eventfields
-    });
+    if(eventfields){
+      eventfields.name = req.params.name;
+      res.status(200).json({
+        message : "Success",
+        event : eventfields
+      });
+    }else{
+      res.status(404).json({
+        message : 'Event not found'
+      });
+    }
   });
 });
 
-app.get('/events', function(req, res){
+app.get('/events', auth, function(req, res){
   eventsClient.lrange('_events', 0, -1, function(err, events){
     var events_data = [];
     async.each(events, function(eventname, cb){
@@ -89,7 +95,7 @@ app.get('/events', function(req, res){
   });
 });
 
-app.get('/events/:count', function(req, res){
+app.get('/events/:count', auth, function(req, res){
   eventsClient.lrange('_events', 0, req.params.count - 1, function(err, events){
     var events_data = [];
     async.each(events, function(eventname, cb){
@@ -108,8 +114,8 @@ app.get('/events/:count', function(req, res){
   });
 });
 
-app.get('/events/:offset/:count', function(req, res){
-  eventsClient.lrange('_events', req.params.offset, req.params.offset + req.params.count -1, function(err, events){
+app.get('/events/:offset/:count', auth, function(req, res){
+  eventsClient.lrange('_events', req.params.offset, req.params.offset + req.params.count - 1, function(err, events){
     var events_data = [];
     async.each(events, function(eventname, cb){
       eventsClient.hgetall(eventname, function(get_err, eventdata){
@@ -161,39 +167,62 @@ app.post("/event/new", auth, function(req, res){
               message : "Event with name already exists"
             });
           }else{
-            eventsClient.lpush('_events', req.body.name);
+            //Parse date strings
+            var startdt = new Date(req.body.starttime);
+            var enddt = new Date(req.body.endtime);
 
-            eventsClient.hset(req.body.name, 'starttime', req.body.starttime);
-            eventsClient.hset(req.body.name, 'endtime', req.body.endtime);
+            //Check validity of dates
+            if(isNan(startdt)){
+              res.status(400).json({
+                message : "Invalid starttime"
+              });
+            }else if(isNan(enddt)){
+              res.status(400).json({
+                message : "Invalid endtime"
+              });
+            }else{
+              eventsClient.lpush('_events', req.body.name); //Push events into events list
 
-            if(req.body.lat)
-              eventsClient.hset(req.body.name, 'lat', req.body.lat);
-            if(req.body.lng)
-              eventsClient.hset(req.body.name, 'lng', req.body.lng);
-            if(req.body.size)
-              eventsClient.hset(req.body.name, 'size', req.body.size);
+              //Set start and end times
+              eventsClient.hset(req.body.name, 'starttime', startdt.getTime());
+              eventsClient.hset(req.body.name, 'endtime', enddt.getTime());
 
-            eventsClient.hset(req.body.name, 'geo', (req.body.lat && req.body.lng && req.body.size) != undefined);
+              //Set geolocation (if present)
+              var has_geo = false;
+              if(req.body.lat && req.body.lng){
+                has_geo = true;
+                eventsClient.hset(req.body.name, 'lat', req.body.lat);
+                eventsClient.hset(req.body.name, 'lng', req.body.lng);
+                eventsClient.hset(req.body.name, 'size', req.body.size ? req.body.size : process.env.DEFAULT_SIZE);
+              }
+              eventsClient.hset(req.body.name, 'geo', has_geo);
 
-            eventsClient.hset(req.body.name, 'organisation', req.body.organisation);
-            eventsClient.hset(req.body.name, 'organiser', decoded);
+              //Set compulsory fields
+              eventsClient.hset(req.body.name, 'organisation', req.body.organisation);
+              eventsClient.hset(req.body.name, 'description', req.body.description);
 
-            usersClient.hget(decoded, 'events', function(getevents_err, raw_events){
-              var events = JSON.parse(raw_events);
-              events.push(req.body.name);
-              usersClient.hset(decoded, 'events', JSON.stringify(events));
-            });
-            eventsClient.hset(req.body.name, 'description', req.body.description);
-            eventsClient.hset(req.body.name, 'counter', 0);
-            if(req.body.max_participants)
-              eventsClient.hset(req.body.name, 'max_participants', req.body.max_participants);
-            eventsClient.hset(req.body.name, 'participants', JSON.stringify([decoded]));
-            if(req.body.picture)
-              eventsClient.hset(req.body.name, 'picture', req.body.picture);
+              //Set organiser
+              eventsClient.hset(req.body.name, 'organiser', decoded);
+              usersClient.hget(decoded, 'events', function(getevents_err, raw_events){
+                var events = JSON.parse(raw_events);
+                events.push(req.body.name);
+                usersClient.hset(decoded, 'events', JSON.stringify(events));
+              });
+              eventsClient.hset(req.body.name, 'participants', JSON.stringify([decoded]));
 
-            res.status(200).json({
-              message : "Success"
-            });
+              //Set system fields
+              eventsClient.hset(req.body.name, 'counter', 0);
+
+              //Set optional fields
+              if(req.body.max_participants)
+                eventsClient.hset(req.body.name, 'max_participants', req.body.max_participants);
+              if(req.body.picture)
+                eventsClient.hset(req.body.name, 'picture', req.body.picture);
+
+              res.status(200).json({
+                message : "Success"
+              });
+            }
           }
         });
       }
@@ -214,12 +243,24 @@ app.post("/event/update/:name", auth, function(req, res){
             eventsClient.hset(req.body.name, 'starttime', req.body.starttime);
           if(req.body.endtime)
             eventsClient.hset(req.body.name, 'endtime', req.body.endtime);
-          if(req.body.lat)
+          if(req.body.lat && req.body.lng){
             eventsClient.hset(req.body.name, 'lat', req.body.lat);
-          if(req.body.lng)
             eventsClient.hset(req.body.name, 'lng', req.body.lng);
-          if(req.body.size)
+            eventsClient.hget(req.body.name, 'size', function(getsize_err, size){
+              eventsClient.hset(req.body.name, 'geo', 1);
+              if(!(size || req.body.size))
+                eventsClient.hset(req.body.name, 'size', req.body.size ? req.body.size : process.env.DEFAULT_SIZE);
+            });
+          }
+          if(req.body.size){
             eventsClient.hset(req.body.name, 'size', req.body.size);
+            eventsClient.hget(req.body.name, 'lat', function(getlat_err, lat){
+              eventsClient.hget(req.body.name, 'lng', function(getlng_err, lng){
+                if((lat && lng) || (req.body.lat && req.body.lng))
+                  eventsClient.hset(req.body.name, 'geo', 1);
+              });
+            });
+          }
           if(req.body.organisation)
             eventsClient.hset(req.body.name, 'organisation', req.body.organisation);
           if(req.body.max_participants)
@@ -230,13 +271,7 @@ app.post("/event/update/:name", auth, function(req, res){
             eventsClient.hset(req.body.name, 'organiser', req.body.organiser);
           if(req.body.picture)
             eventsClient.hset(req.body.name, 'description', req.body.picture);
-          eventsClient.hget(req.body.name, 'lat', function(getlat_err, lat){
-            eventsClient.hget(req.body.name, 'lng', function(getlng_err, lng){
-              eventsClient.hget(req.body.name, 'size', function(getsize_err, size){
-                eventsClient.hset(req.body.name, 'geo', (lat && lng && size) != undefined);
-              });
-            });
-          });
+
           res.status(200).json({
             message : "Success"
           });
@@ -264,9 +299,14 @@ app.post("/event/adduser", function(req, res){
             participants.push(decoded);
           eventsClient.hset(req.body.name, 'participants', JSON.stringify(participants));
           usersClient.hget(decoded, 'events', function(getevents_err, raw_events){
-            var events = JSON.parse(raw_events);
-            events.push(req.body.name);
-            usersClient.hset(decoded, 'events', JSON.stringify(events));
+            if(raw_events){
+              var events = JSON.parse(raw_events);
+              events.push(req.body.name);
+              usersClient.hset(decoded, 'events', JSON.stringify(events));
+            }else{
+              usersClient.hset(decoded, 'events', JSON.stringify([req.body.name]));
+            }
+
             res.status(200).json({
               message : "Success"
             });

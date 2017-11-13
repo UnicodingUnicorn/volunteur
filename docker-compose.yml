@@ -47,6 +47,7 @@ services:
     environment:
       - EVENTS_PORT=10203
       - SECRET=secret
+      - DEFAULT_SIZE=100
     ports:
       - "10203:10203"
     depends_on:

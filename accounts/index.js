@@ -55,7 +55,7 @@ app.get('/', function(req, res){
   });
 });
 
-app.post('/login', function(req, res){
+app.post('/login', auth, function(req, res){
   if(!req.body.username){
     res.status(404).json({
       message : 'Username not found'
@@ -90,6 +90,10 @@ app.post('/user/new', auth, function(req, res){
     res.status(404).json({
       message : 'Name not found'
     });
+  }else if(!req.body.bio){
+    res.status(404).json({
+      message : 'Bio not found'
+    });
   }else if(!req.body.password){
     res.status(404).json({
       message : 'Password not found'
@@ -104,7 +108,8 @@ app.post('/user/new', auth, function(req, res){
         usersClient.hset(req.body.username, 'name', req.body.name);
         usersClient.hset(req.body.username, 'password', req.body.password);
         usersClient.hset(req.body.username, 'bio', req.body.bio);
-        usersClient.hset(req.body.username, 'events', JSON.stringify([]))
+        usersClient.hset(req.body.username, 'events', JSON.stringify([]));
+
         res.status(200).json({
           message : "Success"
         });
@@ -113,8 +118,8 @@ app.post('/user/new', auth, function(req, res){
   }
 });
 
-app.post('/user/update/:token', auth, function(req, res){
-  jwt.verify(req.params.token, secret, function(ver_err, decoded){
+app.post('/user/update', auth, function(req, res){
+  jwt.verify(req.body.token, secret, function(ver_err, decoded){
     if(ver_err){
       res.status(403).json({
         message : "Invalid token"
@@ -123,13 +128,13 @@ app.post('/user/update/:token', auth, function(req, res){
       usersClient.hgetall(decoded, function(err, user){
         if(user){
           if(req.body.name)
-            usersClient.hset(decoded, 'name', req.body.name, redis.print);
+            usersClient.hset(decoded, 'name', req.body.name);
           if(req.body.password)
-            usersClient.hset(decoded, 'password', req.body.password, redis.print)
+            usersClient.hset(decoded, 'password', req.body.password)
           if(req.body.organisation)
-            usersClient.hset(decoded, 'organisation', req.body.organisation, redis.print);
+            usersClient.hset(decoded, 'organisation', req.body.organisation);
           if(req.body.bio)
-            usersClient.hset(decoded, 'bio', req.body.bio, redis.print);
+            usersClient.hset(decoded, 'bio', req.body.bio);
           res.status(200).json({
             message : "Success"
           });
@@ -148,6 +153,7 @@ app.get('/user/:username', auth, function(req, res){
     if(userfields){
       delete userfields.password;
       userfields.username = req.params.username;
+      userfields.events = JSON.parse(userfields.events);
       res.status(200).json({
         message : "Success",
         user : userfields
@@ -171,6 +177,7 @@ app.get('/user/token/:token', auth, function(req, res){
         if(userfields){
           delete userfields.password;
           userfields.username = decoded;
+          userfields.events = JSON.parse(userfields.events);
           res.status(200).json({
             message : "Success",
             user : userfields
@@ -185,7 +192,7 @@ app.get('/user/token/:token', auth, function(req, res){
   });
 });
 
-app.post('/position/report', function(req, res){
+app.post('/position/update', auth, function(req, res){
   jwt.verify(req.body.token, secret, function(ver_err, decoded){
     if(ver_err){
       res.status(403).json({

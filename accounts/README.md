@@ -20,7 +20,9 @@ Just returns a simple received message. Helpful for finding if the API is up.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| message | String | Received at Accounts API|
+| message | String | Received at Accounts API |
+
+---
 
 ### Get a user by username
 
@@ -34,7 +36,7 @@ Get a user based on username.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| username | String | User's username.|
+| username | String | User's username. |
 
 #### Success 200
 
@@ -51,6 +53,8 @@ The user the username specifies cannot be found.
 | ---- | ---- | ----------- |
 | message | String | User not found |
 
+---
+
 ### Get a user by token
 
 ```
@@ -63,7 +67,7 @@ Get a user based on token.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| token | String | User's token.|
+| token | String | User's token. |
 
 #### Success 200
 
@@ -79,6 +83,8 @@ The user the token specifies cannot be found.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | message | String | User not found |
+
+---
 
 ### Login
 
@@ -118,6 +124,8 @@ The login has failed due to an invalid password.
 | ---- | ---- | ----------- |
 | message | String | Invalid password |
 
+---
+
 ### Add a new user
 
 ```
@@ -133,7 +141,7 @@ Add a new user. Do note that **no** verification for strong passwords or the lik
 | username | String | User's username |
 | name | String | User's name |
 | password | String | User's password |
-| bio | String | User's bio (Optional) |
+| bio | String | User's bio |
 
 #### Success 200
 
@@ -147,7 +155,7 @@ Either the username, name or password fields in the body is missing.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| message | String | ```foo``` not found, where ```foo``` is either 'Username', 'Name' or 'Password'. |
+| message | String | ```foo``` not found, where ```foo``` is a missing field described in ```Body```. |
 
 #### Error 400
 
@@ -157,26 +165,23 @@ The user already exists.
 | ---- | ---- | ----------- |
 | message | String | User already exists |
 
+---
+
 ### Update a user's information
 
 ```
-POST /user/update/:token
+POST /user/update
 ```
 
 Update a user's information. Do note that **no** verification for strong passwords or the like is done on the backend.
 
-#### Parameters
+#### Body
+
+All of these fields save the token are optional. If one is not present, it is simply not updated.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | token | String | JWT from login of the user whose information is being updated |
-
-#### Body
-
-All of these fields are optional. If one is not present, it is simply not updated.
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
 | name | String | User's name |
 | password | String | User's password |
 | organisation | String | User's organisation |
@@ -195,6 +200,48 @@ The user the token specifies cannot be found.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | message | String | User not found |
+
+#### Error 403
+
+The token is invalid.
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | Invalid token |
+
+---
+
+### Update a user's location
+
+```
+POST /position/update
+```
+
+Update a user's position (latitude and longitude).
+
+#### Body
+
+All of these fields save the token are optional. If one is not present, it is simply not updated.
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| token | String | JWT from login of the user whose information is being updated |
+| lat | String | The user's new latitude |
+| lng | String | The user's new longitude |
+
+#### Success 200
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | Success |
+
+#### Error 404
+
+The user the token specifies cannot be found. Alternatively, one of the coordinate fields is missing.
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | 'User', 'Lat' or 'Lng' not found |
 
 #### Error 403
 
