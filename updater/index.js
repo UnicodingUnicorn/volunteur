@@ -24,19 +24,6 @@ var update = function(){
             if(now > enddt){ //If it is past the event's end
               //Archive the event
               eventsClient.hset(key, 'over', 1);
-              // eventsClient.hgetall(key, function(getallerr, eventfields){
-              //   eventfields.name = key;
-              //   archives.insert(eventfields, function(ins_err, ins_body){
-              //     if(ins_err){
-              //       console.log(ins_err);
-              //     }else{
-              //       console.log("Archived " + key);
-              //       eventsClient.del(key, redis.print);
-              //       eventsClient.lrem('_events', 0, key);
-              //     }
-              //     cb();
-              //   });
-              // });
             }else{
               //Check if an hour has passed
               eventsClient.hget(key, 'counter', function(count_err, count){

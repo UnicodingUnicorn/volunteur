@@ -186,7 +186,7 @@ app.post("/event/new", auth, function(req, res){
             eventsClient.hset(req.body.name, 'description', req.body.description);
             eventsClient.hset(req.body.name, 'counter', 0);
             if(req.body.max_participants)
-              eventsClient.hset(req.body.name, 'max_paticipants', req.body.max_participants);
+              eventsClient.hset(req.body.name, 'max_participants', req.body.max_participants);
             eventsClient.hset(req.body.name, 'participants', JSON.stringify([decoded]));
             if(req.body.picture)
               eventsClient.hset(req.body.name, 'picture', req.body.picture);
