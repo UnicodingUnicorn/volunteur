@@ -50,7 +50,7 @@ export class EventPage {
       this.organiser = data.event.organiser;
       this.starttime = data.event.starttime;
       this.endtime = data.event.endtime;
-      this.num_participants = data.event.participants.length;
+      this.num_participants = JSON.parse(data.event.participants).length;
       this.max_participants = data.event.max_participants;
       this.http.get(config.ACCOUNTS_URL + '/user/token/' + this.token, {
       }).subscribe((data: any) => {

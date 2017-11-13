@@ -1,6 +1,23 @@
-# volunteur
+
+<div align="center">
+  <img src="assets/volunteur.png" width="256" />
+</div>
+
+<h1 align="center">
+  Volunteur
+</h1>
+
+<p align="center">
+  Bringing the fun back into volunteering
+</p>
+
+<br>
+
+# What's in the name?
 
 Meetup + volunteering. A portmanteau of 'volunteer' and 'connoisseur'.
+
+
 
 ## Services
 
