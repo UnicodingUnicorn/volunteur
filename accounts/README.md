@@ -24,19 +24,22 @@ Just returns a simple received message. Helpful for finding if the API is up.
 
 ---
 
-### Get a user by username
+### Get a user
 
 ```
-GET /user/:username
+GET /user
 ```
 
-Get a user based on username.
+Get a user based on either username or JWT.
 
 #### Parameters
+
+Only one of these parameters are needed. If both are present, the token takes priority.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | username | String | User's username. |
+| token | String | JWT representing the user. |
 
 #### Success 200
 
@@ -45,44 +48,29 @@ Get a user based on username.
 | message | String | Success |
 | user | Object | User object |
 
+#### Error 403
+
+The token is invalid. Only happens when using a JWT.
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | Invalid token |
+
 #### Error 404
 
-The user the username specifies cannot be found.
+The user the username or token specifies cannot be found.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | message | String | User not found |
 
----
+#### Error 400
 
-### Get a user by token
-
-```
-GET /user/token/:token
-```
-
-Get a user based on token.
-
-#### Parameters
+The required parameters are missing.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| token | String | User's token. |
-
-#### Success 200
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| message | String | Success |
-| user | Object | User object |
-
-#### Error 404
-
-The user the token specifies cannot be found.
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| message | String | User not found |
+| message | String | Username not specified |
 
 ---
 

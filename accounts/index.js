@@ -148,48 +148,41 @@ app.post('/user/update', auth, function(req, res){
   });
 });
 
-app.get('/user/:username', auth, function(req, res){
-  usersClient.hgetall(req.params.username, function(err, userfields){
-    if(userfields){
-      delete userfields.password;
-      userfields.username = req.params.username;
-      userfields.events = JSON.parse(userfields.events);
-      res.status(200).json({
-        message : "Success",
-        user : userfields
-      });
-    }else{
-      res.status(404).json({
-        message : 'User not found'
-      });
-    }
-  });
-});
-
-app.get('/user/token/:token', auth, function(req, res){
-  jwt.verify(req.params.token, secret, function(ver_err, decoded){
-    if(ver_err){
-      res.status(403).json({
-        message : "Invalid token"
-      });
-    }else{
-      usersClient.hgetall(decoded, function(err, userfields){
-        if(userfields){
-          delete userfields.password;
-          userfields.username = decoded;
-          userfields.events = JSON.parse(userfields.events);
-          res.status(200).json({
-            message : "Success",
-            user : userfields
-          });
-        }else{
-          res.status(404).json({
-            message : 'User not found'
-          });
-        }
-      });
-    }
-  });
+app.get('/user', auth, function(req, res){
+  var getUser = function(username){
+    usersClient.hgetall(username, function(err, userfields){
+      if(userfields){
+        delete userfields.password;
+        userfields.username = username;
+        userfields.events = JSON.parse(userfields.events);
+        res.status(200).json({
+          message : "Success",
+          user : userfields
+        });
+      }else{
+        res.status(404).json({
+          message : 'User not found'
+        });
+      }
+    });
+  };
+  if(req.query.token){
+    jwt.verify(req.query.token, secret, function(ver_err, decoded){
+      if(ver_err){
+        res.status(403).json({
+          message : "Invalid token"
+        });
+      }else{
+        getUser(decoded);
+      }
+    });
+  }else if(req.query.username){
+    getUser(req.query.username);
+  }else{
+    res.status(400).json({
+      message : "Username not specified"
+    });
+  }
 });
 
 app.post('/position/update', auth, function(req, res){

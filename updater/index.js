@@ -60,7 +60,7 @@ var update = function(){
               });
             }
             //Increment counters in event
-            count >= 2 ? eventsClient.hset(key, 'counter', 0) : eventsClient.hincrby(key, 'counter', 1);
+            count >= 59 ? eventsClient.hset(key, 'counter', 0) : eventsClient.hincrby(key, 'counter', 1);
             cb();
           });
         }
