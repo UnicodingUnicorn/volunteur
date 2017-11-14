@@ -20,7 +20,7 @@ services:
     command: minio server /export
   admin:
     build: ./admin
-    #tty: true
+    tty: true
     environment:
       - ADMIN_PORT=10201
     ports:
@@ -31,7 +31,7 @@ services:
       - redisnet
   accounts:
     build: ./accounts
-    #tty: true
+    tty: true
     environment:
       - ACCOUNTS_PORT=10202
       - SECRET=secret
@@ -43,7 +43,7 @@ services:
       - redisnet
   events:
     build: ./events
-    #tty: true
+    tty: true
     environment:
       - EVENTS_PORT=10203
       - SECRET=secret
@@ -56,14 +56,16 @@ services:
       - redisnet
   fileserve:
     build: ./fileserve
-    #tty: true
+    tty: true
     environment:
       - FILESERVE_PORT=10204
       - MINIO_ACCESS_KEY=ACCESSKEY
       - MINIO_SECRET_KEY=SECRETKEY
+    networks:
+      - minionet
   updater:
     build: ./updater
-    #tty: true
+    tty: true
     depends_on:
       - redis
     networks:

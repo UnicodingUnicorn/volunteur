@@ -33,3 +33,54 @@ There exists seperate dbs in redis for different scopes:
 - 0: User accounts
 - 1: Clients
 - 2: Events
+
+## Objects
+
+### Volunteer
+
+```
+{
+  "username" : String,
+  "name" : String,
+  "password" : String,
+  "bio" : String,
+  "score" : Number,
+  "events" : Array
+}
+```
+
+### Organiser
+
+```
+{
+  "username" : String,
+  "name" : String,
+  "password" : String,
+  "bio" : String,
+  "score" : Number,
+  "events" : Array,
+  "organisation" : String
+}
+```
+
+contact details?
+
+### Event
+
+```
+{
+  "name" : String,
+  "description" : String,
+  "organisation" : String,
+  "organiser" : String,
+  "starttime" : Number,
+  "endtime" : Number,
+  "lat" : Number, (OPTIONAL)
+  "lng" : Number, (OPTIONAL)
+  "size" : Number, (OPTIONAL)
+  "max_participants" : Number, (OPTIONAL)  
+  "picture" : String (OPTIONAL)
+}
+```
+
+Start and end times stored as UNIX epoch time.

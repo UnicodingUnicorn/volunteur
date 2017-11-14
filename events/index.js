@@ -63,6 +63,7 @@ app.get('/', function(req, res){
 app.get('/event/:name', auth, function(req, res){
   eventsClient.hgetall(req.params.name, function(err, eventfields){
     if(eventfields){
+      delete eventfields.counter;
       eventfields.name = req.params.name;
       res.status(200).json({
         message : "Success",
@@ -81,6 +82,7 @@ app.get('/events', auth, function(req, res){
     var events_data = [];
     async.each(events, function(eventname, cb){
       eventsClient.hgetall(eventname, function(get_err, eventdata){
+        delete eventdata.counter;
         eventdata.name = eventname;
         eventdata.participants = JSON.parse(eventdata.participants);
         events_data.push(eventdata);
@@ -100,6 +102,7 @@ app.get('/events/:count', auth, function(req, res){
     var events_data = [];
     async.each(events, function(eventname, cb){
       eventsClient.hgetall(eventname, function(get_err, eventdata){
+        delete eventdata.counter;
         eventdata.name = eventname;
         eventdata.participants = JSON.parse(eventdata.participants);
         events_data.push(eventdata);
@@ -119,6 +122,7 @@ app.get('/events/:offset/:count', auth, function(req, res){
     var events_data = [];
     async.each(events, function(eventname, cb){
       eventsClient.hgetall(eventname, function(get_err, eventdata){
+        delete eventdata.counter;
         eventdata.name = eventname;
         eventdata.participants = JSON.parse(eventdata.participants);
         events_data.push(eventdata);
@@ -172,11 +176,11 @@ app.post("/event/new", auth, function(req, res){
             var enddt = new Date(req.body.endtime);
 
             //Check validity of dates
-            if(isNan(startdt)){
+            if(isNaN(startdt)){
               res.status(400).json({
                 message : "Invalid starttime"
               });
-            }else if(isNan(enddt)){
+            }else if(isNaN(enddt)){
               res.status(400).json({
                 message : "Invalid endtime"
               });

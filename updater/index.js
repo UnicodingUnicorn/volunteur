@@ -13,76 +13,58 @@ var usersClient = redis.createClient({
 });
 
 var update = function(){
-  setTimeout(update, 60 * 1000);
+  setTimeout(update, 60 * 1000); //Run a new function every minute
   eventsClient.lrange('_events', 0, -1, function(err, keys){
     var now = Date.now();
     async.each(keys, function(key, cb){
-      eventsClient.hget(key, 'over', function(getover_err, is_over){
-        if(!is_over){
-          eventsClient.hget(key, 'endtime', function(get_err, endtime){
-            var enddt = new Date(endtime);
-            if(now > enddt){ //If it is past the event's end
-              //Archive the event
-              eventsClient.hset(key, 'over', 1);
-            }else{
-              //Check if an hour has passed
-              eventsClient.hget(key, 'counter', function(count_err, count){
-                if(count == 0){
-                  eventsClient.hget(key, 'starttime', function(getstart_err, starttime){
-                    var startdt = new Date(starttime);
-                    if(startdt.getTime() < now){
-                      console.log('Updating score for ' + key);
-                      eventsClient.hget(key, 'geo', function(geoerr, geoenabled){
-                        if(geoenabled == 'true'){
-                          eventsClient.hget(key, 'lat', function(getlat_err, lat){
-                            eventsClient.hget(key, 'lng', function(getlng_err, lng){
-                              eventsClient.hget(key, 'size', function(getsize_err, size){
-                                eventsClient.hget(key, 'participants', function(getpar_err, raw_participants){
-                                  var participants = JSON.parse(raw_participants);
-                                  async.each(participants, function(participant, cb2){
-                                    if(participant.lat && participant.lng){
-                                      if(geolib.getDistance({latitude : lat, longitude : lng}, {latitude : participant.lat, longitude : participant.lng}, 10) <= size){
-                                        usersClient.hincrby(participant, 'score', 1);
-                                      }
-                                    }else{
-                                      usersClient.hincrby(participant, 'score', 1);
-                                    }
-                                    cb2();
-                                  }, function(){
-
-                                  });
-                                });
-                              });
-                            });
-                          });
+      //Check if the event is over
+      eventsClient.hget(key, 'endtime', function(get_err, endtime){
+        if(now > endtime){ //If it is past the event's end
+          //Archive the event
+          //TODO: archiving stuff
+          cb();
+        }else{
+          //Check if an hour has passed
+          eventsClient.hget(key, 'counter', function(count_err, count){
+            if(count == 0){ //Hours turns on the 0
+              //Check if the event has started
+              eventsClient.hget(key, 'starttime', function(getstart_err, starttime){
+                if(starttime < now){
+                  console.log('Updating score for ' + key);
+                  //Check for presence of geolocation data
+                  eventsClient.hmget(key, 'lat', 'lng', 'size', function(getgeo_err, geodata){
+                    if(geodata[0] && geodata[1] && geodata[2]){
+                      //If there exists geolocation data
+                      var participants = JSON.parse(raw_participants);
+                      async.each(participants, function(participant, cb2){
+                        if(participant.lat && participant.lng){
+                          if(geolib.getDistance({latitude : lat, longitude : lng}, {latitude : participant.lat, longitude : participant.lng}, 10) <= size){
+                            usersClient.hincrby(participant, 'score', 1);
+                          }
                         }else{
-                          eventsClient.hget(key, 'participants', function(getpar_err, raw_participants){
-                            var participants = JSON.parse(raw_participants);
-                            async.each(participants, function(participant, cb2){
-                              usersClient.hincrby(participant, 'score', 1);
-                              cb2();
-                            }, function(){
-
-                            });
-                          });
+                          usersClient.hincrby(participant, 'score', 1);
                         }
+                        cb2();
+                      }, () => {});
+                    }else{
+                      eventsClient.hget(key, 'participants', function(getpar_err, raw_participants){
+                        var participants = JSON.parse(raw_participants);
+                        async.each(participants, function(participant, cb2){
+                          usersClient.hincrby(participant, 'score', 1);
+                          cb2();
+                        }, () => {});
                       });
                     }
                   });
                 }
-                if(count >= 59){
-                  eventsClient.hset(key, 'counter', 0);
-                }else{
-                  eventsClient.hincrby(key, 'counter', 1);
-                }
-                cb();
               });
             }
+            //Increment counters in event
+            count >= 2 ? eventsClient.hset(key, 'counter', 0) : eventsClient.hincrby(key, 'counter', 1);
+            cb();
           });
         }
-      })
-    }, function(){
-
+      });
     });
   });
 }
