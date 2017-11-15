@@ -30,9 +30,10 @@ Default ports:
 ## Redis
 
 There exists seperate dbs in redis for different scopes:
-- 0: User accounts
+- 0: Volunteer accounts
 - 1: Clients
 - 2: Events
+- 3: Organiser accounts
 
 ## Objects
 

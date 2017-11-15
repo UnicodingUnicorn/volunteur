@@ -1,8 +1,8 @@
-# accounts
+# organisers
 
-Accounts API for accessing and modifying user accounts. Depends on redis as its database.
+Accounts API for accessing and modifying organiser accounts. Depends on redis as its database.
 
-The default port for this service is ```10202```.
+The default port for this service is ```10205```.
 
 ## API
 
@@ -130,6 +130,7 @@ Add a new user. Do note that **no** verification for strong passwords or the lik
 | name | String | User's name |
 | password | String | User's password |
 | bio | String | User's bio |
+| organisation | String | User's organisation |
 
 #### Success 200
 
@@ -188,48 +189,6 @@ The user the token specifies cannot be found.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | message | String | User not found |
-
-#### Error 403
-
-The token is invalid.
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| message | String | Invalid token |
-
----
-
-### Update a user's location
-
-```
-POST /position/update
-```
-
-Update a user's position (latitude and longitude).
-
-#### Body
-
-All of these fields save the token are optional. If one is not present, it is simply not updated.
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| token | String | JWT from login of the user whose information is being updated |
-| lat | String | The user's new latitude |
-| lng | String | The user's new longitude |
-
-#### Success 200
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| message | String | Success |
-
-#### Error 404
-
-The user the token specifies cannot be found. Alternatively, one of the coordinate fields is missing.
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| message | String | 'User', 'Lat' or 'Lng' not found |
 
 #### Error 403
 

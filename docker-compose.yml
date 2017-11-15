@@ -29,11 +29,11 @@ services:
       - redis
     networks:
       - redisnet
-  accounts:
-    build: ./accounts
+  volunteers:
+    build: ./volunteers
     tty: true
     environment:
-      - ACCOUNTS_PORT=10202
+      - VOLUNTEERS_PORT=10202
       - SECRET=secret
     ports:
       - "10202:10202"
@@ -63,6 +63,18 @@ services:
       - MINIO_SECRET_KEY=SECRETKEY
     networks:
       - minionet
+  organisers:
+    build: ./organisers
+    tty: true
+    environment:
+      - ORGANISERS_PORT=10205
+      - SECRET=secret
+    ports:
+      - "10205:10205"
+    depends_on:
+      - redis
+    networks:
+      - redisnet
   updater:
     build: ./updater
     tty: true

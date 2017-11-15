@@ -1,11 +1,11 @@
 FROM node:latest
-ENV ACCOUNTS_PORT 10202
+ENV ORGANISERS_PORT 10205
 
 WORKDIR /app
 ADD . /app
 
 RUN npm install
 
-EXPOSE $ACCOUNTS_PORT
+EXPOSE $ORGANISERS_PORT
 
 CMD ["./wait-for-it.sh", "redis:6379", "--", "node", "index.js"]

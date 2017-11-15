@@ -51,7 +51,7 @@ var auth = function(req, res, next){
 
 app.get('/', function(req, res){
   res.status(200).json({
-    message : "Received at Accounts API"
+    message : "Received at Volunteers API"
   });
 });
 
@@ -109,6 +109,7 @@ app.post('/user/new', auth, function(req, res){
         usersClient.hset(req.body.username, 'password', req.body.password);
         usersClient.hset(req.body.username, 'bio', req.body.bio);
         usersClient.hset(req.body.username, 'events', JSON.stringify([]));
+        usersClient.hset(req.body.username, 'score', 0);
 
         res.status(200).json({
           message : "Success"
@@ -185,7 +186,7 @@ app.get('/user', auth, function(req, res){
   }
 });
 
-app.post('/position/update', auth, function(req, res){
+app.post('/position', auth, function(req, res){
   jwt.verify(req.body.token, secret, function(ver_err, decoded){
     if(ver_err){
       res.status(403).json({
@@ -220,6 +221,6 @@ app.post('/position/update', auth, function(req, res){
   });
 });
 
-app.listen(process.env.ACCOUNTS_PORT, function(err){
-  err ? console.error(err) : console.log(("Accounts API up at " + process.env.ACCOUNTS_PORT).green);
+app.listen(process.env.VOLUNTEERS_PORT, function(err){
+  err ? console.error(err) : console.log(("Volunteers API up at " + process.env.VOLUNTEERS_PORT).green);
 });
