@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
-import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenProvider } from '../../providers/token/token';
 
-import config from '../../config'
+import { CONFIG, CONFIG_TOKEN, ApplicationConfig } from '../../config';
 
 /**
  * Generated class for the EventPage page.
@@ -32,7 +31,7 @@ export class EventPage {
 
   token = undefined;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private events:Events, private http:HttpClient, private tokenProvider:TokenProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private events:Events, private http:HttpClient, private tokenProvider:TokenProvider, @Inject(CONFIG_TOKEN) private config : ApplicationConfig) {
     this.token = tokenProvider.token;
     events.subscribe('token-update', (token) => {
       this.token = token;
@@ -42,8 +41,8 @@ export class EventPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad EventPage');
-    this.http.get(config.EVENTS_URL + '/event/' + encodeURIComponent(this.name), {
-      //headers : new HttpHeaders().set('Authorization', 'Basic ' + btoa(config.CLIENT_ID + ':' + config.CLIENT_SECRET))
+    this.http.get(this.config.EVENTS_URL + '/event/' + encodeURIComponent(this.name), {
+      headers : new HttpHeaders().set('Authorization', 'Basic ' + btoa(this.config.CLIENT_ID + ':' + this.config.CLIENT_SECRET))
     }).subscribe((data: any) => {
       this.description = data.event.description;
       this.organisation = data.event.organisation;
@@ -52,7 +51,8 @@ export class EventPage {
       this.endtime = data.event.endtime;
       this.num_participants = JSON.parse(data.event.participants).length;
       this.max_participants = data.event.max_participants;
-      this.http.get(config.ACCOUNTS_URL + '/user/token/' + this.token, {
+      this.http.get(this.config.VOLUNTEERS_URL + '/user?token=' + this.token, {
+
       }).subscribe((data: any) => {
         if (data.user.events.indexOf(this.name) >= 0) {
           this.is_participating = true;
@@ -67,7 +67,7 @@ export class EventPage {
     if (!bool) {
       return
     }
-    this.http.post(config.EVENTS_URL + '/event/adduser', {
+    this.http.post(this.config.EVENTS_URL + '/event/adduser', {
       name: this.name,
       token: this.token
     }).subscribe((data: any) => {

@@ -1,11 +1,21 @@
+import { InjectionToken } from '@angular/core'
 
-const HOST = "10.185.0.199";
-//const HOST = "192.168.99.100";
+//const HOST = "10.185.0.199";
+const HOST = "192.168.99.100";
 // const HOST = window.location.hostname;
 
-const CLIENT_ID = "";
-const CLIENT_SECRET = "";
-const ACCOUNTS_URL = "http://" + HOST + ":10202";
-const EVENTS_URL = "http://" + HOST + ":10203";
+export interface ApplicationConfig {
+  CLIENT_ID : string,
+  CLIENT_SECRET : string,
+  VOLUNTEERS_URL : string,
+  EVENTS_URL : string
+};
 
-export default { HOST, CLIENT_ID, CLIENT_SECRET, ACCOUNTS_URL, EVENTS_URL };
+export const CONFIG : ApplicationConfig = {
+  CLIENT_ID : "",
+  CLIENT_SECRET : "",
+  VOLUNTEERS_URL : "http://" + HOST + ":10202",
+  EVENTS_URL : "http://" + HOST + ":10203"
+}
+
+export const CONFIG_TOKEN = new InjectionToken<ApplicationConfig>('config');

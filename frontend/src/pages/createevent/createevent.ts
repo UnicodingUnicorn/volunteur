@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController, Events, Tabs } from 'ionic-angular';
 
 import { HttpClient } from '@angular/common/http';
 import { TokenProvider } from '../../providers/token/token'
 import { FindPage } from '../find/find'
 
-import config from '../../config'
+import { CONFIG, CONFIG_TOKEN, ApplicationConfig } from '../../config';
 
 /**
  * Generated class for the CreateeventPage page.
@@ -29,7 +29,7 @@ export class CreateEventPage {
 
   token:string = "";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http:HttpClient, private tokenProvider:TokenProvider, private tc:ToastController, private events:Events) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private http:HttpClient, private tokenProvider:TokenProvider, private tc:ToastController, private events:Events, @Inject(CONFIG_TOKEN) private config : ApplicationConfig) {
     this.token = tokenProvider.token;
     events.subscribe('token-update', (token) => {
       this.token = token;
@@ -53,7 +53,7 @@ export class CreateEventPage {
       this.starttime = '';
       this.endtime = ''
     }else{
-      this.http.post(config.EVENTS_URL + '/event/new', {
+      this.http.post(this.config.EVENTS_URL + '/event/new', {
         token : this.token,
         name : this.name,
         description : this.description,
@@ -70,9 +70,6 @@ export class CreateEventPage {
         toast.present();
         var t:Tabs = this.navCtrl.parent;
         t.select(0);
-        // this.navCtrl.push(FindPage).then(() => {
-        //   this.navCtrl.remove(0)
-        // });
       }, (res) => {
         console.log(res);
         let toast = this.tc.create({

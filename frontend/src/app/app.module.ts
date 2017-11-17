@@ -6,7 +6,6 @@ import { MyApp } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 
 import { LoginPage } from '../pages/login/login';
-
 import { FindPage } from '../pages/find/find';
 import { BrowsePage } from '../pages/browse/browse';
 import { GoingPage } from '../pages/going/going';
@@ -16,6 +15,10 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { SignupPage } from '../pages/signup/signup';
 import { EventPage } from '../pages/event/event';
 import { CreateEventPage } from '../pages/createevent/createevent';
+
+import { TokenProvider } from '../providers/token/token';
+
+import { CONFIG, CONFIG_TOKEN, ApplicationConfig } from '../config'
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -61,7 +64,8 @@ import { TokenProvider } from '../providers/token/token';
     SplashScreen,
     Deeplinks,
     TokenProvider,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide : ErrorHandler, useClass : IonicErrorHandler},
+    {provide : CONFIG_TOKEN, useValue : CONFIG}
   ]
 })
 export class AppModule {}

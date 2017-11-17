@@ -13,9 +13,15 @@
 
 <br>
 
-# What's in the name?
+## What's in the name?
 
 Meetup + volunteering. A portmanteau of 'volunteer' and 'connoisseur'.
+
+## Running the backend
+
+```
+docker-compose up --build
+```
 
 ## Services
 

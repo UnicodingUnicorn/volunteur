@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeader } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular'
 import { Storage } from '@ionic/storage';

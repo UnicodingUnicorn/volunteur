@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 import { HttpClient } from '@angular/common/http';
 
-import config from "../../config"
+import { CONFIG, CONFIG_TOKEN, ApplicationConfig } from '../../config';
 
 /**
  * Generated class for the SignupPage page.
@@ -23,7 +23,7 @@ export class SignupPage {
   passwordConfirm:string = "";
   bio:string = "";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private tc:ToastController, private http:HttpClient) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private tc:ToastController, private http:HttpClient, @Inject(CONFIG_TOKEN) private config:ApplicationConfig) {
   }
 
   ionViewDidLoad() {
@@ -41,7 +41,7 @@ export class SignupPage {
       });
       toast.present();
     }else{
-      this.http.post(config.ACCOUNTS_URL + '/user/new', {
+      this.http.post(this.config.VOLUNTEERS_URL + '/user/new', {
         username : this.username,
         name : this.name,
         password : this.password,

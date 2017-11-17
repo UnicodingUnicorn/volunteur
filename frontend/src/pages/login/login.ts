@@ -1,14 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 
 import { TabsPage } from '../tabs/tabs';
 import { SignupPage } from '../signup/signup';
 
-import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenProvider } from '../../providers/token/token'
 
-import config from '../../config'
+import { CONFIG, CONFIG_TOKEN, ApplicationConfig } from '../../config';
 
 /**
  * Generated class for the LoginPage page.
@@ -29,8 +28,8 @@ export class LoginPage {
 
   bgClass:string = Math.round(Math.random()) ? "bg-1" : "bg-2";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http:HttpClient, private tokenProvider:TokenProvider, private tc:ToastController) {
-    console.log(this.bgClass);
+  constructor(public navCtrl: NavController, public navParams: NavParams, private http:HttpClient, private tokenProvider:TokenProvider, private tc:ToastController, @Inject(CONFIG_TOKEN) private config:ApplicationConfig) {
+    //console.log(this.bgClass);
   }
 
   ionViewDidLoad() {
@@ -44,7 +43,7 @@ export class LoginPage {
   }
 
   login(){
-    this.http.post(config.ACCOUNTS_URL + '/login', {
+    this.http.post(this.config.VOLUNTEERS_URL + '/login', {
       username : this.username,
       password : this.password
     }, {}).subscribe((data: any) => {
