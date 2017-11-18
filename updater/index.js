@@ -2,6 +2,39 @@ var async = require("async");
 var colours = require("colors");
 var geolib = require("geolib");
 
+var express = require("express");
+var cors = require("cors");
+
+var connections = [];
+
+var app = express();
+app.use(cors());
+var sendData = function(data){
+  async.each(connections, (connection, cb) => {
+    connection.write("data: " + JSON.stringify(data) + "\n\n");
+  }, () => {});
+};
+
+app.get('/', function(req, res){
+  res.status(200).json({
+    message : "Received at Updater service"
+  });
+});
+
+//TODO: Associate res with particular user
+app.get('/updates', function(req, res){
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive'
+  });
+  connections.push(res);
+});
+
+app.listen(process.env.UPDATES_PORT, function(err){
+  err ? console.error(err) : console.log(("Updates service up at " + process.env.UPDATES_PORT).green);
+});
+
 var redis = require("redis");
 var eventsClient = redis.createClient({
   host : 'redis',
@@ -11,6 +44,14 @@ var usersClient = redis.createClient({
   host : 'redis',
   db : 0
 });
+
+var incrementScore = function(username){
+  usersClient.hincrby(username, 'score', 1);
+  sendData({
+    type : 'score',
+    user : username
+  });
+}
 
 var update = function(){
   setTimeout(update, 60 * 1000); //Run a new function every minute

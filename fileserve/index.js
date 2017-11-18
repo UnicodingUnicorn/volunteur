@@ -102,7 +102,7 @@ app.post('/file', auth, upload.single('file'), function(req, res){
           message : "Storage does not exist."
         });
       }else{
-        var fileName = uniqid() + req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
+        var fileName = uniqid() + '.' + req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
         mClient.putObject('files', fileName, req.file.buffer, function(put_err, etag){
           if(put_err){
             res.status(500).json({

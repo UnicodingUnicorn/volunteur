@@ -61,6 +61,8 @@ services:
       - FILESERVE_PORT=10204
       - MINIO_ACCESS_KEY=ACCESSKEY
       - MINIO_SECRET_KEY=SECRETKEY
+    ports:
+      - "10204:10204"
     networks:
       - minionet
   organisers:
@@ -78,8 +80,12 @@ services:
   updater:
     build: ./updater
     tty: true
+    environment:
+      - UPDATES_PORT=10206
     depends_on:
       - redis
+    ports:
+      - "10206:10206"
     networks:
       - redisnet
 networks:
