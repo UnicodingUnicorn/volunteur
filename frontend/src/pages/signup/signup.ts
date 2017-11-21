@@ -1,8 +1,7 @@
-import { Component, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
-import { HttpClient } from '@angular/common/http';
 
-import { CONFIG, CONFIG_TOKEN, ApplicationConfig } from '../../config';
+import { UserApiProvider } from '../../providers/user-api/user-api';
 
 /**
  * Generated class for the SignupPage page.
@@ -23,7 +22,7 @@ export class SignupPage {
   passwordConfirm:string = "";
   bio:string = "";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private tc:ToastController, private http:HttpClient, @Inject(CONFIG_TOKEN) private config:ApplicationConfig) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private tc:ToastController, private userApi:UserApiProvider) {
   }
 
   ionViewDidLoad() {
@@ -41,12 +40,12 @@ export class SignupPage {
       });
       toast.present();
     }else{
-      this.http.post(this.config.VOLUNTEERS_URL + '/user/new', {
+      this.userApi.createUser({
         username : this.username,
         name : this.name,
         password : this.password,
         bio : this.bio
-      }, {}).subscribe((data: any) => {
+      }).then(() => {
         let toast = this.tc.create({
           message : 'Account successfully created! Please login',
           duration : 2500,
@@ -54,13 +53,6 @@ export class SignupPage {
         });
         toast.present();
         this.navCtrl.pop();
-      }, (err) => {
-        let toast = this.tc.create({
-          message : err.message,
-          duration : 2500,
-          position : 'bottom'
-        });
-        toast.present();
       });
     }
   }

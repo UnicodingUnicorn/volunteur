@@ -1,10 +1,8 @@
-import { Component, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { HttpClient } from '@angular/common/http';
-import { TokenProvider } from '../../providers/token/token'
 
 import { EventPage } from '../event/event';
-import { CONFIG, CONFIG_TOKEN, ApplicationConfig } from '../../config';
+import { EventsApiProvider } from '../../providers/events-api/events-api'
 
 @Component({
   selector: 'page-find',
@@ -13,15 +11,13 @@ import { CONFIG, CONFIG_TOKEN, ApplicationConfig } from '../../config';
 export class FindPage {
   events = [];
 
-  constructor(public navCtrl: NavController, private http:HttpClient, @Inject(CONFIG_TOKEN) private config : ApplicationConfig) {
-
+  constructor(public navCtrl: NavController, private eventsApi:EventsApiProvider) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad FindPage');
-    this.http.get(this.config.EVENTS_URL + "/events").subscribe((data:any) => {
-      this.events = data.events;
-      console.log(this.events);
+    this.eventsApi.getEvents().then((events) => {
+      this.events = events;
     });
   }
 

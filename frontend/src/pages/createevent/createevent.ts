@@ -2,8 +2,10 @@ import { Component, Inject } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController, Events, Tabs } from 'ionic-angular';
 
 import { HttpClient } from '@angular/common/http';
-import { TokenProvider } from '../../providers/token/token'
-import { FindPage } from '../find/find'
+
+import { EventsApiProvider } from '../../providers/events-api/events-api';
+import { TokenProvider } from '../../providers/token/token';
+import { FindPage } from '../find/find';
 
 import { CONFIG, CONFIG_TOKEN, ApplicationConfig } from '../../config';
 
@@ -29,7 +31,7 @@ export class CreateEventPage {
 
   token:string = "";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http:HttpClient, private tokenProvider:TokenProvider, private tc:ToastController, private events:Events, @Inject(CONFIG_TOKEN) private config : ApplicationConfig) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private http:HttpClient, private tokenProvider:TokenProvider, private eventsApi:EventsApiProvider, private tc:ToastController, private events:Events, @Inject(CONFIG_TOKEN) private config : ApplicationConfig) {
     this.token = tokenProvider.token;
     events.subscribe('token-update', (token) => {
       this.token = token;
@@ -53,15 +55,40 @@ export class CreateEventPage {
       this.starttime = '';
       this.endtime = ''
     }else{
-      this.http.post(this.config.EVENTS_URL + '/event/new', {
-        token : this.token,
+      // this.http.post(this.config.EVENTS_URL + '/event/new', {
+      //   token : this.token,
+      //   name : this.name,
+      //   description : this.description,
+      //   organisation : this.organisation,
+      //   max_participants : this.max_participants,
+      //   starttime : this.starttime,
+      //   endtime : this.endtime
+      // }, {}).subscribe((data: any) => {
+      //   let toast = this.tc.create({
+      //     message : 'Added new event successfully!',
+      //     duration : 2500,
+      //     position : 'bottom'
+      //   });
+      //   toast.present();
+      //   var t:Tabs = this.navCtrl.parent;
+      //   t.select(0);
+      // }, (res) => {
+      //   console.log(res);
+      //   let toast = this.tc.create({
+      //     message : res.error.message,
+      //     duration : 2500,
+      //     position : 'bottom'
+      //   });
+      //   toast.present();
+      // });
+      this.eventsApi.createEvent({
         name : this.name,
         description : this.description,
         organisation : this.organisation,
         max_participants : this.max_participants,
         starttime : this.starttime,
         endtime : this.endtime
-      }, {}).subscribe((data: any) => {
+      }).then((res) => {
         let toast = this.tc.create({
           message : 'Added new event successfully!',
           duration : 2500,
@@ -70,10 +97,9 @@ export class CreateEventPage {
         toast.present();
         var t:Tabs = this.navCtrl.parent;
         t.select(0);
-      }, (res) => {
-        console.log(res);
+      }, (err_message) => {
         let toast = this.tc.create({
-          message : res.error.message,
+          message : err_message,
           duration : 2500,
           position : 'bottom'
         });

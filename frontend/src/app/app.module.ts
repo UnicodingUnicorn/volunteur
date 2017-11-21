@@ -16,14 +16,15 @@ import { SignupPage } from '../pages/signup/signup';
 import { EventPage } from '../pages/event/event';
 import { CreateEventPage } from '../pages/createevent/createevent';
 
-import { TokenProvider } from '../providers/token/token';
-
 import { CONFIG, CONFIG_TOKEN, ApplicationConfig } from '../config'
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Deeplinks } from '@ionic-native/deeplinks';
 import { TokenProvider } from '../providers/token/token';
+import { UserProvider } from '../providers/user/user';
+import { UserApiProvider } from '../providers/user-api/user-api';
+import { EventsApiProvider } from '../providers/events-api/events-api';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,10 @@ import { TokenProvider } from '../providers/token/token';
     Deeplinks,
     TokenProvider,
     {provide : ErrorHandler, useClass : IonicErrorHandler},
-    {provide : CONFIG_TOKEN, useValue : CONFIG}
+    {provide : CONFIG_TOKEN, useValue : CONFIG},
+    UserProvider,
+    UserApiProvider,
+    EventsApiProvider
   ]
 })
 export class AppModule {}

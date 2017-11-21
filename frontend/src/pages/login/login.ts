@@ -1,13 +1,10 @@
-import { Component, Inject } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { TabsPage } from '../tabs/tabs';
 import { SignupPage } from '../signup/signup';
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { TokenProvider } from '../../providers/token/token'
-
-import { CONFIG, CONFIG_TOKEN, ApplicationConfig } from '../../config';
+import { UserApiProvider } from '../../providers/user-api/user-api';
 
 /**
  * Generated class for the LoginPage page.
@@ -22,13 +19,12 @@ import { CONFIG, CONFIG_TOKEN, ApplicationConfig } from '../../config';
   templateUrl: 'login.html',
 })
 export class LoginPage {
-
   username:string = '';
   password:string = '';
 
   bgClass:string = Math.round(Math.random()) ? "bg-1" : "bg-2";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http:HttpClient, private tokenProvider:TokenProvider, private tc:ToastController, @Inject(CONFIG_TOKEN) private config:ApplicationConfig) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private userApi:UserApiProvider) {
     //console.log(this.bgClass);
   }
 
@@ -38,25 +34,13 @@ export class LoginPage {
 
   onLoginSuccess() {
     this.navCtrl.push(TabsPage).then(() => {
-      this.navCtrl.remove(0)
+      this.navCtrl.remove(0);
     });
   }
 
   login(){
-    this.http.post(this.config.VOLUNTEERS_URL + '/login', {
-      username : this.username,
-      password : this.password
-    }, {}).subscribe((data: any) => {
-      this.tokenProvider.setToken(data.token);
+    this.userApi.login(this.username, this.password).then(() => {
       this.onLoginSuccess();
-    }, (res) => {
-      console.log(res);
-      let toast = this.tc.create({
-        message : res.error.message,
-        duration : 2500,
-        position : 'bottom'
-      });
-      toast.present();
     });
   }
 

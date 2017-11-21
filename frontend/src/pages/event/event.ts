@@ -1,9 +1,7 @@
-import { Component, Inject } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { TokenProvider } from '../../providers/token/token';
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams, Events, ToastController } from 'ionic-angular';
 
-import { CONFIG, CONFIG_TOKEN, ApplicationConfig } from '../../config';
+import { EventsApiProvider } from '../../providers/events-api/events-api';
 
 /**
  * Generated class for the EventPage page.
@@ -31,7 +29,7 @@ export class EventPage {
 
   token = undefined;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private events:Events, private http:HttpClient, private tokenProvider:TokenProvider, @Inject(CONFIG_TOKEN) private config : ApplicationConfig) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private tc:ToastController, private events:Events, private eventsApi:EventsApiProvider) {
     this.token = tokenProvider.token;
     events.subscribe('token-update', (token) => {
       this.token = token;
@@ -41,40 +39,30 @@ export class EventPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad EventPage');
-    this.http.get(this.config.EVENTS_URL + '/event/' + encodeURIComponent(this.name), {
-      headers : new HttpHeaders().set('Authorization', 'Basic ' + btoa(this.config.CLIENT_ID + ':' + this.config.CLIENT_SECRET))
-    }).subscribe((data: any) => {
-      this.description = data.event.description;
-      this.organisation = data.event.organisation;
-      this.organiser = data.event.organiser;
-      this.starttime = data.event.starttime;
-      this.endtime = data.event.endtime;
-      this.num_participants = JSON.parse(data.event.participants).length;
-      this.max_participants = data.event.max_participants;
-      this.http.get(this.config.VOLUNTEERS_URL + '/user?token=' + this.token, {
-
-      }).subscribe((data: any) => {
-        if (data.user.events.indexOf(this.name) >= 0) {
-          this.is_participating = true;
-        }
-      });
-    }, (err) => {
-      console.log(err);
+    this.eventsApi.getEvent(this.name).then((event) => {
+      this.description = event.description;
+      this.organisation = event.organisation;
+      this.organiser = event.organiser;
+      this.starttime = event.starttime;
+      this.endtime = event.endtime;
+      this.num_participants = event.num_participants;
+      this.max_participants = event.max_participants;
+      this.is_participating = event.is_participating;
     });
   }
 
   setGoing(bool) {
-    if (!bool) {
-      return
-    }
-    this.http.post(this.config.EVENTS_URL + '/event/adduser', {
-      name: this.name,
-      token: this.token
-    }).subscribe((data: any) => {
-    }, (err) => {
-      console.log(err);
+    if (!bool)
+      return;
+    this.eventsApi.addUser(this.name).then(() => {
+      this.ionViewDidLoad();
+      let toast = this.tc.create({
+        message : 'Joined event!',
+        duration : 2500,
+        position : 'bottom'
+      });
+      toast.present();
     });
-    this.ionViewDidLoad();
   }
 
 }

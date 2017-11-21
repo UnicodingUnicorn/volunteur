@@ -69,6 +69,7 @@ app.get('/event/:name', auth, function(req, res){
     if(eventfields){
       delete eventfields.counter;
       eventfields.name = req.params.name;
+      eventfields.participants = JSON.parse(eventfields.participants);
       res.status(200).json({
         message : "Success",
         event : eventfields
@@ -189,7 +190,7 @@ app.post("/event/new", auth, function(req, res){
                 message : "Invalid endtime"
               });
             }else{
-              organisersClient.hexists(decoded, function(exists_err, organiser_exists){
+              organisersClient.exists(decoded, function(exists_err, organiser_exists){
                 if(organiser_exists){
                   eventsClient.lpush('_events', req.body.name); //Push events into events list
 
