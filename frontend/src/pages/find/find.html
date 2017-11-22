@@ -8,7 +8,7 @@
 
   <h1 padding>Recommended for you</h1>
   <ion-card *ngFor="let e of events" class="card-image" style="background-image: url('/assets/imgs/1.jpg')" (click)="openEvent(e.name)">
-    <h3 class="card-title">{{e.name}}</h3>
+    <h3 class="card-title" style="cursor:pointer;">{{e.name}}</h3>
     <div class="card-subtitle">{{e.organisation}}</div>
   </ion-card>
 

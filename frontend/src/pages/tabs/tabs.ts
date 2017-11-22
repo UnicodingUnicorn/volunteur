@@ -9,6 +9,7 @@ import { GoingPage } from '../going/going';
 import { UpdatesPage } from '../updates/updates';
 import { ProfilePage } from '../profile/profile';
 import { CreateEventPage } from '../createevent/createevent';
+import { ScoreboardPage } from '../scoreboard/scoreboard';
 
 import { TokenProvider } from '../../providers/token/token'
 
@@ -27,6 +28,7 @@ export class TabsPage {
   tab4Root = UpdatesPage;
   tab5Root = ProfilePage;
   tab6Root = CreateEventPage;
+  tab7Root = ScoreboardPage;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public tokenProvider: TokenProvider, private events: Events) {
     events.subscribe('token-update', (token) => {

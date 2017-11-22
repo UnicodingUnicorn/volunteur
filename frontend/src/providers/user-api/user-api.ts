@@ -66,7 +66,7 @@ export class UserApiProvider {
 
   createUser(user:any){
     return new Promise((resolve) => {
-      this.http.post(this.config.VOLUNTEERS_URL + '/user/new', {
+      this.http.post(this.config.VOLUNTEERS_URL + '/user', {
         username : user.username,
         name : user.name,
         password : user.password,
@@ -82,6 +82,16 @@ export class UserApiProvider {
           position : 'bottom'
         });
         toast.present();
+      });
+    });
+  }
+
+  getAllScores(){
+    return new Promise((resolve) => {
+      this.http.get(this.config.VOLUNTEERS_URL + '/scores', {
+        headers : new HttpHeaders().set('Authorization', 'Basic ' + btoa(this.config.CLIENT_ID + ':' + this.config.CLIENT_SECRET))
+      }).subscribe((data:any) => {
+        resolve(data.users);
       });
     });
   }

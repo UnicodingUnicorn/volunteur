@@ -48,6 +48,7 @@ var usersClient = redis.createClient({
 
 var incrementScore = function(username){
   usersClient.hincrby(username, 'score', 1);
+  usersClient.zincrby('_scores', 1, username);
   sendData({
     type : 'score',
     user : username
@@ -78,6 +79,7 @@ var update = function(){
                     if(geodata[0] && geodata[1] && geodata[2]){
                       //If there exists geolocation data
                       var participants = JSON.parse(raw_participants);
+                      participants.shift();
                       async.each(participants, function(participant, cb2){
                         if(participant.lat && participant.lng){
                           if(geolib.getDistance({latitude : lat, longitude : lng}, {latitude : participant.lat, longitude : participant.lng}, 10) <= size){
@@ -93,6 +95,7 @@ var update = function(){
                     }else{
                       eventsClient.hget(key, 'participants', function(getpar_err, raw_participants){
                         var participants = JSON.parse(raw_participants);
+                        participants.shift();
                         async.each(participants, function(participant, cb2){
                           // usersClient.hincrby(participant, 'score', 1);
                           incrementScore(participant);

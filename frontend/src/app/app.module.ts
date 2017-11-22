@@ -15,6 +15,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { SignupPage } from '../pages/signup/signup';
 import { EventPage } from '../pages/event/event';
 import { CreateEventPage } from '../pages/createevent/createevent';
+import { ScoreboardPage } from '../pages/scoreboard/scoreboard';
 
 import { CONFIG, CONFIG_TOKEN, ApplicationConfig } from '../config'
 
@@ -38,7 +39,8 @@ import { EventsApiProvider } from '../providers/events-api/events-api';
     TabsPage,
     EventPage,
     SignupPage,
-    CreateEventPage
+    CreateEventPage,
+    ScoreboardPage
   ],
   imports: [
     BrowserModule,
@@ -58,7 +60,8 @@ import { EventsApiProvider } from '../providers/events-api/events-api';
     TabsPage,
     EventPage,
     SignupPage,
-    CreateEventPage
+    CreateEventPage,
+    ScoreboardPage
   ],
   providers: [
     StatusBar,

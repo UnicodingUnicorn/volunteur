@@ -117,7 +117,7 @@ The login has failed due to an invalid password.
 ### Add a new user
 
 ```
-POST /user/new
+POST /user
 ```
 
 Add a new user. Do note that **no** verification for strong passwords or the like is done on the backend.

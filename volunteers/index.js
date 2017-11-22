@@ -2,6 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var cors = require("cors");
 
+var async = require("async");
 var basicauth = require("basic-auth");
 var colours = require("colors");
 var jwt = require("jsonwebtoken");
@@ -81,7 +82,7 @@ app.post('/login', auth, function(req, res){
   }
 });
 
-app.post('/user/new', auth, function(req, res){
+app.post('/user', auth, function(req, res){
   if(!req.body.username){
     res.status(404).json({
       message : 'Username not found'
@@ -99,23 +100,29 @@ app.post('/user/new', auth, function(req, res){
       message : 'Password not found'
     });
   }else{
-    usersClient.exists(req.body.username, function(err, user_exists){
-      if(user_exists){
-        res.status(400).json({
-          message : "User already exists"
-        });
-      }else{
-        usersClient.hset(req.body.username, 'name', req.body.name);
-        usersClient.hset(req.body.username, 'password', req.body.password);
-        usersClient.hset(req.body.username, 'bio', req.body.bio);
-        usersClient.hset(req.body.username, 'events', JSON.stringify([]));
-        usersClient.hset(req.body.username, 'score', 0);
+    if(req.body.username == '_scores'){ //Reservd namespace
+      res.status(400).json({
+        message : "Reserved username"
+      });
+    }else{
+      usersClient.exists(req.body.username, function(err, user_exists){
+        if(user_exists){
+          res.status(400).json({
+            message : "User already exists"
+          });
+        }else{
+          usersClient.hset(req.body.username, 'name', req.body.name);
+          usersClient.hset(req.body.username, 'password', req.body.password);
+          usersClient.hset(req.body.username, 'bio', req.body.bio);
+          usersClient.hset(req.body.username, 'events', JSON.stringify([]));
+          usersClient.hset(req.body.username, 'score', 0);
 
-        res.status(200).json({
-          message : "Success"
-        });
-      }
-    });
+          res.status(200).json({
+            message : "Success"
+          });
+        }
+      });
+    }
   }
 });
 
@@ -218,6 +225,31 @@ app.post('/position', auth, function(req, res){
         });
       }
     }
+  });
+});
+
+app.get('/scores', function(req, res){
+  if(!req.query.count)
+    req.query.count = -1;
+  usersClient.zrevrange('_scores', 0, req.query.count, (err, leaders) => {
+    var return_data = [];
+    var i = 1;
+    async.eachSeries(leaders, (leader, cb) => {
+      usersClient.hget(leader, 'score', (get_err, score) => {
+        return_data.push({
+          user : leader,
+          score : score
+          place : i
+        });
+        i++;
+        cb();
+      });
+    }, () => {
+      res.status(200).json({
+        message : "Success",
+        users : return_data
+      });
+    })
   });
 });
 

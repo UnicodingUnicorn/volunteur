@@ -35,15 +35,17 @@ export class EventPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad EventPage');
-    this.eventsApi.getEvent(this.name).then((event) => {
-      this.description = event.description;
-      this.organisation = event.organisation;
-      this.organiser = event.organiser;
-      this.starttime = event.starttime;
-      this.endtime = event.endtime;
-      this.num_participants = event.num_participants;
-      this.max_participants = event.max_participants;
-      this.is_participating = event.is_participating;
+    this.eventsApi.getEvent(this.name).then((event:any) => {
+      if(event != {}){
+        this.description = event.description;
+        this.organisation = event.organisation;
+        this.organiser = event.organiser;
+        this.starttime = event.starttime;
+        this.endtime = event.endtime;
+        this.num_participants = event.num_participants;
+        this.max_participants = event.max_participants;
+        this.is_participating = event.is_participating;
+      }
     });
   }
 
