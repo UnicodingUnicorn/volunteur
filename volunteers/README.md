@@ -74,6 +74,29 @@ The required parameters are missing.
 
 ---
 
+### Get the leaderboard
+
+```
+GET /scores
+```
+
+Get an array of users ordered on score, with the highest having the lowest index in the array.
+
+#### Query parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| count | Number | Amount of records to retrieve. Optional, if not present, all the records will be retrieved |
+
+#### Success 200
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | Success |
+| user | Array | Array of: ```{ "user" : <Username>, "score" : <Score>, "place" : <Index + 1> }``` |
+
+---
+
 ### Login
 
 ```
@@ -114,18 +137,21 @@ The login has failed due to an invalid password.
 
 ---
 
-### Add a new user
+### Add/Edit a user
 
 ```
 POST /user
 ```
 
-Add a new user. Do note that **no** verification for strong passwords or the like is done on the backend.
+Add or edit a user, depending on the presence of ```token``` in the body. Do note that **no** verification for strong passwords or the like is done on the backend.
 
 #### Body
 
+If token is present, the rest of the body is optional; if a field is not present, is simply is not updated.
+
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| token | String | Token representing user to be edited |
 | username | String | User's username |
 | name | String | User's name |
 | password | String | User's password |
@@ -139,11 +165,21 @@ Add a new user. Do note that **no** verification for strong passwords or the lik
 
 #### Error 404
 
-Either the username, name or password fields in the body is missing.
+##### Adding user
+
+One of the fields specified in the body is missing.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | message | String | ```foo``` not found, where ```foo``` is a missing field described in ```Body```. |
+
+##### Editing user
+
+The user the token specifies cannot be found.
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| message | String | User not found |
 
 #### Error 400
 
@@ -153,45 +189,9 @@ The user already exists.
 | ---- | ---- | ----------- |
 | message | String | User already exists |
 
----
-
-### Update a user's information
-
-```
-POST /user/update
-```
-
-Update a user's information. Do note that **no** verification for strong passwords or the like is done on the backend.
-
-#### Body
-
-All of these fields save the token are optional. If one is not present, it is simply not updated.
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| token | String | JWT from login of the user whose information is being updated |
-| name | String | User's name |
-| password | String | User's password |
-| organisation | String | User's organisation |
-| bio | String | User's bio |
-
-#### Success 200
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| message | String | Success |
-
-#### Error 404
-
-The user the token specifies cannot be found.
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| message | String | User not found |
-
 #### Error 403
 
-The token is invalid.
+The token is invalid, only appears if the ```token``` field is present.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |

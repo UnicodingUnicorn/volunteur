@@ -83,77 +83,77 @@ app.post('/login', auth, function(req, res){
 });
 
 app.post('/user', auth, function(req, res){
-  if(!req.body.username){
-    res.status(404).json({
-      message : 'Username not found'
-    });
-  }else if(!req.body.name){
-    res.status(404).json({
-      message : 'Name not found'
-    });
-  }else if(!req.body.bio){
-    res.status(404).json({
-      message : 'Bio not found'
-    });
-  }else if(!req.body.password){
-    res.status(404).json({
-      message : 'Password not found'
+  if(req.body.token){
+    jwt.verify(req.body.token, secret, function(ver_err, decoded){
+      if(ver_err){
+        res.status(403).json({
+          message : "Invalid token"
+        });
+      }else{
+        usersClient.hgetall(decoded, function(err, user){
+          if(user){
+            if(req.body.name)
+              usersClient.hset(decoded, 'name', req.body.name);
+            if(req.body.password)
+              usersClient.hset(decoded, 'password', req.body.password)
+            if(req.body.organisation)
+              usersClient.hset(decoded, 'organisation', req.body.organisation);
+            if(req.body.bio)
+              usersClient.hset(decoded, 'bio', req.body.bio);
+            res.status(200).json({
+              message : "Success"
+            });
+          }else{
+            res.status(404).json({
+              message : "User not found"
+            });
+          }
+        });
+      }
     });
   }else{
-    if(req.body.username == '_scores'){ //Reservd namespace
-      res.status(400).json({
-        message : "Reserved username"
+    if(!req.body.username){
+      res.status(404).json({
+        message : 'Username not found'
+      });
+    }else if(!req.body.name){
+      res.status(404).json({
+        message : 'Name not found'
+      });
+    }else if(!req.body.bio){
+      res.status(404).json({
+        message : 'Bio not found'
+      });
+    }else if(!req.body.password){
+      res.status(404).json({
+        message : 'Password not found'
       });
     }else{
-      usersClient.exists(req.body.username, function(err, user_exists){
-        if(user_exists){
-          res.status(400).json({
-            message : "User already exists"
-          });
-        }else{
-          usersClient.hset(req.body.username, 'name', req.body.name);
-          usersClient.hset(req.body.username, 'password', req.body.password);
-          usersClient.hset(req.body.username, 'bio', req.body.bio);
-          usersClient.hset(req.body.username, 'events', JSON.stringify([]));
-          usersClient.hset(req.body.username, 'score', 0);
+      if(req.body.username == '_scores'){ //Reservd namespace
+        res.status(400).json({
+          message : "Reserved username"
+        });
+      }else{
+        usersClient.exists(req.body.username, function(err, user_exists){
+          if(user_exists){
+            res.status(400).json({
+              message : "User already exists"
+            });
+          }else{
+            usersClient.hset(req.body.username, 'name', req.body.name);
+            usersClient.hset(req.body.username, 'password', req.body.password);
+            usersClient.hset(req.body.username, 'bio', req.body.bio);
+            usersClient.hset(req.body.username, 'events', JSON.stringify([]));
+            usersClient.hset(req.body.username, 'score', 0);
 
-          res.status(200).json({
-            message : "Success"
-          });
-        }
-      });
+            res.status(200).json({
+              message : "Success"
+            });
+          }
+        });
+      }
     }
   }
-});
-
-app.post('/user/update', auth, function(req, res){
-  jwt.verify(req.body.token, secret, function(ver_err, decoded){
-    if(ver_err){
-      res.status(403).json({
-        message : "Invalid token"
-      });
-    }else{
-      usersClient.hgetall(decoded, function(err, user){
-        if(user){
-          if(req.body.name)
-            usersClient.hset(decoded, 'name', req.body.name);
-          if(req.body.password)
-            usersClient.hset(decoded, 'password', req.body.password)
-          if(req.body.organisation)
-            usersClient.hset(decoded, 'organisation', req.body.organisation);
-          if(req.body.bio)
-            usersClient.hset(decoded, 'bio', req.body.bio);
-          res.status(200).json({
-            message : "Success"
-          });
-        }else{
-          res.status(404).json({
-            message : "User not found"
-          });
-        }
-      });
-    }
-  });
 });
 
 app.get('/user', auth, function(req, res){
@@ -228,7 +228,7 @@ app.post('/position', auth, function(req, res){
   });
 });
 
-app.get('/scores', function(req, res){
+app.get('/scores', auth, function(req, res){
   if(!req.query.count)
     req.query.count = -1;
   usersClient.zrevrange('_scores', 0, req.query.count, (err, leaders) => {
