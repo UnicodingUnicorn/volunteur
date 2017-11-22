@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
 
 import { UserProvider } from '../../providers/user/user';
@@ -22,7 +22,12 @@ export class ProfilePage {
   bio = "";
   attended_events = [];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private events:Events, private userProvider:UserProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private events:Events, private zone:NgZone, private userProvider:UserProvider) {
+    this.events.subscribe("user:score", (score) => {
+      this.zone.run(() => {
+        this.score = score;
+      });
+    });
   }
 
   ionViewDidLoad() {
@@ -32,6 +37,8 @@ export class ProfilePage {
     this.score = this.userProvider.getScore();
     this.bio = this.userProvider.getBio();
     this.attended_events = this.userProvider.getAttendedEvents();
+
+
   }
 
 }

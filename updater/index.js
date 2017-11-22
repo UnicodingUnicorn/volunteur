@@ -12,6 +12,7 @@ app.use(cors());
 var sendData = function(data){
   async.each(connections, (connection, cb) => {
     connection.write("data: " + JSON.stringify(data) + "\n\n");
+    cb();
   }, () => {});
 };
 
@@ -80,10 +81,12 @@ var update = function(){
                       async.each(participants, function(participant, cb2){
                         if(participant.lat && participant.lng){
                           if(geolib.getDistance({latitude : lat, longitude : lng}, {latitude : participant.lat, longitude : participant.lng}, 10) <= size){
-                            usersClient.hincrby(participant, 'score', 1);
+                            //usersClient.hincrby(participant, 'score', 1);
+                            incrementScore(participant);
                           }
                         }else{
-                          usersClient.hincrby(participant, 'score', 1);
+                          // usersClient.hincrby(participant, 'score', 1);
+                          incrementScore(participant);
                         }
                         cb2();
                       }, () => {});
@@ -91,7 +94,8 @@ var update = function(){
                       eventsClient.hget(key, 'participants', function(getpar_err, raw_participants){
                         var participants = JSON.parse(raw_participants);
                         async.each(participants, function(participant, cb2){
-                          usersClient.hincrby(participant, 'score', 1);
+                          // usersClient.hincrby(participant, 'score', 1);
+                          incrementScore(participant);
                           cb2();
                         }, () => {});
                       });
@@ -101,7 +105,8 @@ var update = function(){
               });
             }
             //Increment counters in event
-            count >= 59 ? eventsClient.hset(key, 'counter', 0) : eventsClient.hincrby(key, 'counter', 1);
+            //count >= 59 ? eventsClient.hset(key, 'counter', 0) : eventsClient.hincrby(key, 'counter', 1);
+            count >= 2 ? eventsClient.hset(key, 'counter', 0) : eventsClient.hincrby(key, 'counter', 1);
             cb();
           });
         }

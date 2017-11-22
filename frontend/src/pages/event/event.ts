@@ -30,10 +30,6 @@ export class EventPage {
   token = undefined;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private tc:ToastController, private events:Events, private eventsApi:EventsApiProvider) {
-    this.token = tokenProvider.token;
-    events.subscribe('token-update', (token) => {
-      this.token = token;
-    });
     this.name = this.navParams.get('id');
   }
 

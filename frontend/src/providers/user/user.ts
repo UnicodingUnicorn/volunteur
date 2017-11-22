@@ -1,5 +1,7 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
+import { Events } from 'ionic-angular';
+
+import { CONFIG_TOKEN, ApplicationConfig } from '../../config';
 
 /*
   Generated class for the UserProvider provider.
@@ -15,8 +17,16 @@ export class UserProvider {
   private bio:string = "";
   private attended_events = [];
 
-  constructor(public http: HttpClient) {
+  constructor(private events:Events, @Inject(CONFIG_TOKEN) private config:ApplicationConfig) {
     console.log('Hello UserProvider Provider');
+    var es = new EventSource(this.config.UPDATES_URL);
+    es.onmessage = (e) => {
+      var message = JSON.parse(e.data);
+      if(message.type == 'score' && message.user == this.username){
+        this.score = this.score + 1;
+        this.events.publish("user:score", this.score);
+      }
+    };
   }
 
   public setUsername(username:string){
@@ -34,7 +44,7 @@ export class UserProvider {
   }
 
   public setScore(score:number){
-    this.score = score;
+    this.score = +score;
   }
   public getScore(){
     return this.score;
@@ -54,7 +64,7 @@ export class UserProvider {
   public setUser(user:any){
     this.username = user.username;
     this.name = user.name;
-    this.score = user.score || 0;
+    this.score = +(user.score) || 0;
     this.bio = user.bio;
     this.attended_events = user.attended_events;
   }
