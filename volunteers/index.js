@@ -238,7 +238,7 @@ app.get('/scores', function(req, res){
       usersClient.hget(leader, 'score', (get_err, score) => {
         return_data.push({
           user : leader,
-          score : score
+          score : score,
           place : i
         });
         i++;

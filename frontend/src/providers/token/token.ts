@@ -21,9 +21,7 @@ export class TokenProvider {
     });
   }
 
-  load(){
-    if(this.token)
-      return Promise.resolve(this.token);
+  loadToken(){
     return new Promise(resolve => {
       this.storage.ready().then(() => {
         this.storage.get('token').then((val) => {
@@ -43,6 +41,10 @@ export class TokenProvider {
 
   getToken(){
     return this.token;
+  }
+
+  deleteToken(){
+    return this.storage.remove('token');
   }
 
 }
