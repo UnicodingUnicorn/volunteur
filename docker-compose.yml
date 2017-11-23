@@ -23,6 +23,10 @@ services:
     tty: true
     environment:
       - ADMIN_PORT=10201
+      - ADMIN_ID=admin
+      - ADMIN_PASSWORD=password
+      - JWT_SECRET=secret
+      - COOKIE_SECRET=secret
     ports:
       - "10201:10201"
     depends_on:

@@ -1,0 +1,52 @@
+<nav>
+  <div class="nav-wrapper amber lighten-2">
+    <a href="#" class="brand-logo">Volunteur Admin</a>
+    <ul id="nav-mobile" class="right hide-on-med-and-down sidenav">
+      <li class="active"><a>Clients</a></li>
+      <li><a href="/volunteers">Volunteers</a></li>
+      <li><a href="/organisers">Oragnisers</a></li>
+      <li><a href="/events">Events</a></li>
+      <li><a href="/logout">Logout</a></li>
+    </ul>
+  </div>
+</nav>
+{{#if error}}
+  <div class="row">
+    <div class="card-panel red col s10 offset-s1">
+      {{error}}
+    </div>
+  </div>
+{{/if}}
+{{#if client_id}}
+  {{#if client_secret}}
+    <div class="row">
+      <div class="card-panel amber lighten-4 col s10 offset-s1">
+        Your client id is {{client_id}}<br />
+        Your client secret is {{client_secret}}
+      </div>
+    </div>
+  {{/if}}
+{{/if}}
+<div class="row">
+  <div class="col s10 offset-s1">
+    <table class="striped">
+      <thead>
+        <tr>
+          <th>Client ID</th>
+          <th>Secret</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each clients}}
+          <tr>
+            <td>{{id}}</td>
+            <td>{{secret}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+<form class="fixed-action-btn" action="/client" method="POST">
+  <button type="submit" class="waves-effect waves-light btn-floating btn-large amber white-text"><i class="material-icons">add</i></button>
+</form>
